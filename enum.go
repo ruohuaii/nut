@@ -2,6 +2,8 @@ package nut
 
 const Nut = "nut"
 
+const Zero = 0
+
 const (
 	Require  = "require"
 	Optional = "optional"
