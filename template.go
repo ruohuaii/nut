@@ -16,12 +16,8 @@ func init() {
 }
 
 var StdNutVT = `func ({{.ShortName}} {{.FullName}}) Check() error {
-{{range $k,$v:=.Rules}}
-{{range $v}}
-	if {{.Condition}} {
-		return errors.New("出错啦!")
-	}
-{{end}}
-{{end}}
+{{range $k,$v:=.Rules}}{{range $v}}	{{.Condition}}
+{{end}}{{end}}
+	return nil
 }
 `
