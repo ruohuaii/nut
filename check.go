@@ -1,6 +1,7 @@
 package nut
 
 import (
+	"errors"
 	"fmt"
 	"math"
 	"reflect"
@@ -8,9 +9,57 @@ import (
 	"strings"
 )
 
-func check(field reflect.StructField, tvs []string) error {
-	fieldName := field.Name
-	switch field.Type.Kind() {
+func depthCheck(v reflect.Value) error {
+	if !v.CanInterface() {
+		return errors.New("exists on an unsafe type")
+	}
+
+	t := v.Type()
+	for i := 0; i < v.NumField(); i++ {
+		fv := v.Field(i)
+		switch fv.Kind() {
+		case reflect.Struct:
+			err := checkStruct(fv)
+			if err != nil {
+				return err
+			}
+		case reflect.Pointer:
+			if fv.IsNil() {
+				continue
+			}
+			fvc := fv.Elem()
+			switch fvc.Kind() {
+			case reflect.Struct:
+				err := checkStruct(fvc)
+				if err != nil {
+					return err
+				}
+			default:
+				ft := t.Field(i)
+				tv := ft.Tag.Get(Nut)
+				cns := strings.Split(tv, ";")
+				err := check(fvc.Type(), cns)
+				if err != nil {
+					return err
+				}
+			}
+		default:
+			ft := t.Field(i)
+			tv := ft.Tag.Get(Nut)
+			cns := strings.Split(tv, ";")
+			err := check(ft.Type, cns)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func check(field reflect.Type, tvs []string) error {
+	fieldName := field.Name()
+	switch field.Kind() {
 	case reflect.Int8:
 		return checkInt8(fieldName, tvs)
 	case reflect.Uint8:
@@ -38,22 +87,28 @@ func check(field reflect.StructField, tvs []string) error {
 	case reflect.String:
 		return checkString(fieldName, tvs)
 	case reflect.Slice:
+		return checkSlice(fieldName, tvs)
 	case reflect.Array:
+		return checkSlice(fieldName, tvs)
+	case reflect.Bool:
+		return checkBool(fieldName, tvs)
 	}
+
 	return nil
 }
 
 func checkInt8(fieldName string, tvs []string) error {
 	for _, v := range tvs {
+		if v == "" {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
-
-		if !stringArray(conditions[:7]).Contains(cds[0]) {
+		if !stringArray(SingleTypeCondSet[:]).Contains(cds[0]) {
 			return condKeyErr(fieldName)
 		}
-
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
@@ -86,6 +141,11 @@ func checkInt8(fieldName string, tvs []string) error {
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
 			}
+		case Size:
+			_, err := strconv.Atoi(cds[1])
+			if err != nil {
+				return condFormatErr(fieldName)
+			}
 		}
 	}
 
@@ -94,12 +154,15 @@ func checkInt8(fieldName string, tvs []string) error {
 
 func checkUint8(fieldName string, tvs []string) error {
 	for _, v := range tvs {
+		if v == "" {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !stringArray(conditions[:7]).Contains(cds[0]) {
+		if !stringArray(SingleTypeCondSet[:]).Contains(cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -135,6 +198,11 @@ func checkUint8(fieldName string, tvs []string) error {
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
 			}
+		case Size:
+			_, err := strconv.Atoi(cds[1])
+			if err != nil {
+				return condFormatErr(fieldName)
+			}
 		}
 	}
 
@@ -143,12 +211,15 @@ func checkUint8(fieldName string, tvs []string) error {
 
 func checkInt16(fieldName string, tvs []string) error {
 	for _, v := range tvs {
+		if v == "" {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !stringArray(conditions[:7]).Contains(cds[0]) {
+		if !stringArray(SingleTypeCondSet[:]).Contains(cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -184,6 +255,11 @@ func checkInt16(fieldName string, tvs []string) error {
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
 			}
+		case Size:
+			_, err := strconv.Atoi(cds[1])
+			if err != nil {
+				return condFormatErr(fieldName)
+			}
 		}
 	}
 
@@ -192,12 +268,15 @@ func checkInt16(fieldName string, tvs []string) error {
 
 func checkUint16(fieldName string, tvs []string) error {
 	for _, v := range tvs {
+		if v == "" {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !stringArray(conditions[:7]).Contains(cds[0]) {
+		if !stringArray(SingleTypeCondSet[:]).Contains(cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -233,6 +312,11 @@ func checkUint16(fieldName string, tvs []string) error {
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
 			}
+		case Size:
+			_, err := strconv.Atoi(cds[1])
+			if err != nil {
+				return condFormatErr(fieldName)
+			}
 		}
 	}
 
@@ -241,12 +325,15 @@ func checkUint16(fieldName string, tvs []string) error {
 
 func checkInt32(fieldName string, tvs []string) error {
 	for _, v := range tvs {
+		if v == "" {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !stringArray(conditions[:7]).Contains(cds[0]) {
+		if !stringArray(SingleTypeCondSet[:]).Contains(cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -282,6 +369,11 @@ func checkInt32(fieldName string, tvs []string) error {
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
 			}
+		case Size:
+			_, err := strconv.Atoi(cds[1])
+			if err != nil {
+				return condFormatErr(fieldName)
+			}
 		}
 	}
 
@@ -290,12 +382,15 @@ func checkInt32(fieldName string, tvs []string) error {
 
 func checkUint32(fieldName string, tvs []string) error {
 	for _, v := range tvs {
+		if v == "" {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !stringArray(conditions[:7]).Contains(cds[0]) {
+		if !stringArray(SingleTypeCondSet[:]).Contains(cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -331,6 +426,11 @@ func checkUint32(fieldName string, tvs []string) error {
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
 			}
+		case Size:
+			_, err := strconv.Atoi(cds[1])
+			if err != nil {
+				return condFormatErr(fieldName)
+			}
 		}
 	}
 
@@ -339,12 +439,15 @@ func checkUint32(fieldName string, tvs []string) error {
 
 func checkInt(fieldName string, tvs []string) error {
 	for _, v := range tvs {
+		if v == "" {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !stringArray(conditions[:7]).Contains(cds[0]) {
+		if !stringArray(SingleTypeCondSet[:]).Contains(cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -380,6 +483,11 @@ func checkInt(fieldName string, tvs []string) error {
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
 			}
+		case Size:
+			_, err := strconv.Atoi(cds[1])
+			if err != nil {
+				return condFormatErr(fieldName)
+			}
 		}
 	}
 
@@ -388,12 +496,15 @@ func checkInt(fieldName string, tvs []string) error {
 
 func checkUint(fieldName string, tvs []string) error {
 	for _, v := range tvs {
+		if v == "" {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !stringArray(conditions[:7]).Contains(cds[0]) {
+		if !stringArray(SingleTypeCondSet[:]).Contains(cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -429,6 +540,11 @@ func checkUint(fieldName string, tvs []string) error {
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
 			}
+		case Size:
+			_, err := strconv.Atoi(cds[1])
+			if err != nil {
+				return condFormatErr(fieldName)
+			}
 		}
 	}
 
@@ -437,12 +553,15 @@ func checkUint(fieldName string, tvs []string) error {
 
 func checkInt64(fieldName string, tvs []string) error {
 	for _, v := range tvs {
+		if v == "" {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !stringArray(conditions[:7]).Contains(cds[0]) {
+		if !stringArray(SingleTypeCondSet[:]).Contains(cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -478,6 +597,11 @@ func checkInt64(fieldName string, tvs []string) error {
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
 			}
+		case Size:
+			_, err := strconv.Atoi(cds[1])
+			if err != nil {
+				return condFormatErr(fieldName)
+			}
 		}
 	}
 
@@ -486,12 +610,15 @@ func checkInt64(fieldName string, tvs []string) error {
 
 func checkUint64(fieldName string, tvs []string) error {
 	for _, v := range tvs {
+		if v == "" {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !stringArray(conditions[:7]).Contains(cds[0]) {
+		if !stringArray(SingleTypeCondSet[:]).Contains(cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -527,6 +654,11 @@ func checkUint64(fieldName string, tvs []string) error {
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
 			}
+		case Size:
+			_, err := strconv.Atoi(cds[1])
+			if err != nil {
+				return condFormatErr(fieldName)
+			}
 		}
 	}
 
@@ -535,12 +667,15 @@ func checkUint64(fieldName string, tvs []string) error {
 
 func checkFloat32(fieldName string, tvs []string) error {
 	for _, v := range tvs {
+		if v == "" {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !stringArray(conditions[:7]).Contains(cds[0]) {
+		if !stringArray(SingleTypeCondSet[:]).Contains(cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -576,6 +711,11 @@ func checkFloat32(fieldName string, tvs []string) error {
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
 			}
+		case Size:
+			_, err := strconv.Atoi(cds[1])
+			if err != nil {
+				return condFormatErr(fieldName)
+			}
 		}
 	}
 
@@ -584,12 +724,15 @@ func checkFloat32(fieldName string, tvs []string) error {
 
 func checkFloat64(fieldName string, tvs []string) error {
 	for _, v := range tvs {
+		if v == "" {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !stringArray(conditions[:7]).Contains(cds[0]) {
+		if !stringArray(SingleTypeCondSet[:]).Contains(cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -625,6 +768,11 @@ func checkFloat64(fieldName string, tvs []string) error {
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
 			}
+		case Size:
+			_, err := strconv.Atoi(cds[1])
+			if err != nil {
+				return condFormatErr(fieldName)
+			}
 		}
 	}
 
@@ -633,14 +781,79 @@ func checkFloat64(fieldName string, tvs []string) error {
 
 func checkString(fieldName string, tvs []string) error {
 	for _, v := range tvs {
+		if v == "" {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
-
-		if !stringArray(conditions[:7]).Contains(cds[0]) {
+		if !stringArray(SingleTypeCondSet[:]).Contains(cds[0]) {
 			return condKeyErr(fieldName)
 		}
+		if cds[0] == Size {
+			_, err := strconv.Atoi(cds[1])
+			if err != nil {
+				return condFormatErr(fieldName)
+			}
+		}
+	}
+
+	return nil
+}
+
+func checkSlice(fieldName string, tvs []string) error {
+	for _, v := range tvs {
+		if v == "" {
+			continue
+		}
+		cds := strings.Split(v, ":")
+		if len(cds) != 2 {
+			return condValNumErr(fieldName, len(cds), v)
+		}
+		if !stringArray(ArrayCondSet[:]).Contains(cds[0]) {
+			return condKeyErr(fieldName)
+		}
+		if cds[0] == Size {
+			_, err := strconv.Atoi(cds[1])
+			if err != nil {
+				return condFormatErr(fieldName)
+			}
+		}
+	}
+
+	return nil
+}
+
+func checkBool(fieldName string, tvs []string) error {
+	for _, v := range tvs {
+		if v == "" {
+			continue
+		}
+		cds := strings.Split(v, ":")
+		if len(cds) != 2 {
+			return condValNumErr(fieldName, len(cds), v)
+		}
+		if !stringArray(BoolCondSet[:]).Contains(cds[0]) {
+			return condKeyErr(fieldName)
+		}
+	}
+
+	return nil
+}
+
+func checkStruct(v reflect.Value) error {
+	if !v.CanInterface() {
+		return errors.New("exists on an unsafe type")
+	}
+
+	t := v.Type()
+	for i := 0; i < v.NumField(); i++ {
+		ft := t.Field(i)
+		tv := ft.Tag.Get(Nut)
+		cns := strings.Split(tv, ";")
+		return check(ft.Type, cns)
+
 	}
 
 	return nil

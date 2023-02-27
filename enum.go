@@ -10,6 +10,7 @@ const (
 )
 
 const (
+	Null     = ""
 	Eq       = "eq"
 	Neq      = "neq"
 	Gt       = "gt"
@@ -19,7 +20,12 @@ const (
 	Between  = "between"
 	In       = "in"
 	Contains = "contains"
+	Size     = "size"
 	Regexp   = "regexp"
 )
 
-var conditions = [9]string{Eq, Neq, Gt, Gte, Lt, Lte, Between, In, Contains}
+var (
+	SingleTypeCondSet = [11]string{Eq, Neq, Gt, Gte, Lt, Lte, Between, In, Contains, Size}
+	ArrayCondSet      = [4]string{Size, In, Contains}
+	BoolCondSet       = [1]string{Eq}
+)

@@ -17,6 +17,7 @@ type Structure struct {
 	Lt              []*Field
 	Lte             []*Field
 	Between         []*Field
+	Size            []*Field
 	In              []*Field
 	Contains        []*Field
 }
