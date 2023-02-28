@@ -1,14 +1,12 @@
 package nut
 
+//Nut tag name
 const Nut = "nut"
 
+//Zero numeral base value
 const Zero = 0
 
-const (
-	Require  = "require"
-	Optional = "optional"
-)
-
+//Some conditions name
 const (
 	Null     = ""
 	Eq       = "eq"
@@ -20,12 +18,36 @@ const (
 	Between  = "between"
 	In       = "in"
 	Contains = "contains"
+	NContain = "ncontain"
 	Size     = "size"
 	Regexp   = "regexp"
+
+	//Type array or slice element type
+	Type = "type"
 )
 
+//Some conditions set
 var (
+	NumeralCondSet = [7]string{Eq, Neq, Lt, Lte, Gt, Gte, Between}
+	StringCondSet  = [8]string{Eq, Neq, Lt, Lte, Gt, Gte, Between, In}
+	ArrayCondSet   = [4]string{Size, Contains, NContain, Type}
+	BoolCondSet    = [1]string{Eq}
+
+	ContainsCondSet   = [2]string{Contains, NContain}
 	SingleTypeCondSet = [11]string{Eq, Neq, Gt, Gte, Lt, Lte, Between, In, Contains, Size}
-	ArrayCondSet      = [4]string{Size, In, Contains}
-	BoolCondSet       = [1]string{Eq}
+)
+
+const (
+	Int8    = "int8"
+	Int16   = "int16"
+	Int32   = "int32"
+	Int     = "int"
+	Int64   = "int64"
+	Uint8   = "uint8"
+	Uint16  = "uint16"
+	Uint32  = "uint32"
+	Uint64  = "uint64"
+	Float32 = "float32"
+	Float64 = "float64"
+	String  = "string"
 )

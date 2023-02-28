@@ -43,19 +43,19 @@ func parse(data any) (Structure, error) {
 					})
 				case Lt:
 					rules[fieldName] = append(rules[fieldName], Field{
-						Condition: ThrowCondLt(opt.ShortName, fieldName, fcv[1]),
+						Condition: ThrowCondGte(opt.ShortName, fieldName, fcv[1]),
 					})
 				case Lte:
 					rules[fieldName] = append(rules[fieldName], Field{
-						Condition: ThrowCondLte(opt.ShortName, fieldName, fcv[1]),
+						Condition: ThrowCondGt(opt.ShortName, fieldName, fcv[1]),
 					})
 				case Gt:
 					rules[fieldName] = append(rules[fieldName], Field{
-						Condition: ThrowCondGt(opt.ShortName, fieldName, fcv[1]),
+						Condition: ThrowCondLte(opt.ShortName, fieldName, fcv[1]),
 					})
 				case Gte:
 					rules[fieldName] = append(rules[fieldName], Field{
-						Condition: ThrowCondGte(opt.ShortName, fieldName, fcv[1]),
+						Condition: ThrowCondLt(opt.ShortName, fieldName, fcv[1]),
 					})
 				case Between:
 					cvs := strings.Split(fcv[1], ",")
@@ -68,7 +68,29 @@ func parse(data any) (Structure, error) {
 						Condition: ThrowCondSize(opt.ShortName, fieldName, cvs[0], cvs[1], kind.String()),
 					})
 				}
-
+			case reflect.Slice, reflect.Array:
+				var elemType string
+				for _, v := range fcs {
+					rule := strings.Split(v, ":")
+					if rule[0] == Type {
+						elemType = rule[1]
+					}
+				}
+				switch fcv[0] {
+				case Contains:
+					rules[fieldName] = append(rules[fieldName], Field{
+						Condition: ThrowCondNContain(opt.ShortName, fieldName, fcv[1], elemType),
+					})
+				case NContain:
+					rules[fieldName] = append(rules[fieldName], Field{
+						Condition: ThrowCondContains(opt.ShortName, fieldName, fcv[1], elemType),
+					})
+				case Size:
+					cvs := strings.Split(fcv[1], ",")
+					rules[fieldName] = append(rules[fieldName], Field{
+						Condition: ThrowCondSize(opt.ShortName, fieldName, cvs[0], cvs[1], kind.String()),
+					})
+				}
 			}
 
 		}
