@@ -6,13 +6,19 @@ import (
 )
 
 type Woman struct {
-	Age    int    `nut:"eq:18"`
-	Weight int    `nut:"neq:120"`
-	Height int    `nut:"between:170,180"`
-	Belt   int8   `nut:"size:1"`
-	Like   []int8 `nut:"size:1,5;excluded:2,3,4;type:int8"`
-	Study  string `nut:"regexp:/d"`
-	Boot   string `nut:"in:l1,l2,l3;type:string"`
+	Age     int     `nut:"eq:18"`
+	Weight  int     `nut:"neq:120"`
+	Height  int     `nut:"between:170,180"`
+	Belt    int8    `nut:"size:1"`
+	Like    []int8  `nut:"size:1,5;excluded:2,3,4;type:int8"`
+	Study   string  `nut:"regexp:/d"`
+	Boot    string  `nut:"in:l1,l2,l3;type:string"`
+	Husband Husband `nut:"skip"`
+}
+
+type Husband struct {
+	Name string `nut:"size:10,20"`
+	Age  int    `nut:"eq:20"`
 }
 
 func (w *Woman) Check() error {

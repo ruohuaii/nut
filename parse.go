@@ -106,6 +106,8 @@ func parse(data any) (Structure, error) {
 						Condition: ThrowCondSize(opt.ShortName, fieldName, cvs, kind.String()),
 					})
 				}
+			case reflect.Struct:
+
 			}
 
 		}

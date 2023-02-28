@@ -1,12 +1,12 @@
 package nut
 
-//Nut tag name
+//Nut is the structure tag name
 const Nut = "nut"
 
-//Zero numeral base value
+//Zero is the underlying value of the numeric type
 const Zero = 0
 
-//Some conditions name
+//Some condition names
 const (
 	Eq       = "eq"
 	Neq      = "neq"
@@ -21,17 +21,22 @@ const (
 	Size     = "size"
 	Regexp   = "regexp"
 
-	//Type array or slice element type
+	//Type is used to describe the type of the field or the type of the array element
 	Type = "type"
+
+	//Skip is used to skip the detection of the structure
+	Skip = "skip"
 )
 
-//Some conditions set
+//Some set of conditions
 var (
 	NumeralCondSet = [10]string{Eq, Neq, Lt, Lte, Gt, Gte, Between, In, Type, Size}
 	StringCondSet  = [11]string{Eq, Neq, Lt, Lte, Gt, Gte, Between, In, Type, Regexp, Size}
 	ArrayCondSet   = [4]string{Contains, Excluded, Type, Size}
 	BoolCondSet    = [1]string{Eq}
 )
+
+//Some types name
 
 const (
 	Int8    = "int8"
