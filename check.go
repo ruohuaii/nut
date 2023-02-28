@@ -119,7 +119,7 @@ func checkInt8(fieldName string, tvs []string) error {
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
-		if !ArrayContains(SingleTypeCondSet[:], cds[0]) {
+		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
 		cds0 := cds[0]
@@ -155,14 +155,9 @@ func checkInt8(fieldName string, tvs []string) error {
 				return condValLogicErr(fieldName, cds0)
 			}
 		case Size:
-			sv := strings.Split(cds[1], ",")
-			_, err := strconv.Atoi(sv[0])
+			err := checkSize(fieldName, cds[1])
 			if err != nil {
-				return condFormatErr(fieldName)
-			}
-			_, err = strconv.Atoi(sv[1])
-			if err != nil {
-				return condFormatErr(fieldName)
+				return err
 			}
 		}
 	}
@@ -180,7 +175,7 @@ func checkUint8(fieldName string, tvs []string) error {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !ArrayContains(SingleTypeCondSet[:], cds[0]) {
+		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -217,14 +212,9 @@ func checkUint8(fieldName string, tvs []string) error {
 				return condValLogicErr(fieldName, cds0)
 			}
 		case Size:
-			sv := strings.Split(cds[1], ",")
-			_, err := strconv.Atoi(sv[0])
+			err := checkSize(fieldName, cds[1])
 			if err != nil {
-				return condFormatErr(fieldName)
-			}
-			_, err = strconv.Atoi(sv[1])
-			if err != nil {
-				return condFormatErr(fieldName)
+				return err
 			}
 		}
 	}
@@ -242,7 +232,7 @@ func checkInt16(fieldName string, tvs []string) error {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !ArrayContains(SingleTypeCondSet[:], cds[0]) {
+		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -279,14 +269,9 @@ func checkInt16(fieldName string, tvs []string) error {
 				return condValLogicErr(fieldName, cds0)
 			}
 		case Size:
-			sv := strings.Split(cds[1], ",")
-			_, err := strconv.Atoi(sv[0])
+			err := checkSize(fieldName, cds[1])
 			if err != nil {
-				return condFormatErr(fieldName)
-			}
-			_, err = strconv.Atoi(sv[1])
-			if err != nil {
-				return condFormatErr(fieldName)
+				return err
 			}
 		}
 	}
@@ -304,7 +289,7 @@ func checkUint16(fieldName string, tvs []string) error {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !ArrayContains(SingleTypeCondSet[:], cds[0]) {
+		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -341,14 +326,9 @@ func checkUint16(fieldName string, tvs []string) error {
 				return condValLogicErr(fieldName, cds0)
 			}
 		case Size:
-			sv := strings.Split(cds[1], ",")
-			_, err := strconv.Atoi(sv[0])
+			err := checkSize(fieldName, cds[1])
 			if err != nil {
-				return condFormatErr(fieldName)
-			}
-			_, err = strconv.Atoi(sv[1])
-			if err != nil {
-				return condFormatErr(fieldName)
+				return err
 			}
 		}
 	}
@@ -366,7 +346,7 @@ func checkInt32(fieldName string, tvs []string) error {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !ArrayContains(SingleTypeCondSet[:], cds[0]) {
+		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -403,14 +383,9 @@ func checkInt32(fieldName string, tvs []string) error {
 				return condValLogicErr(fieldName, cds0)
 			}
 		case Size:
-			sv := strings.Split(cds[1], ",")
-			_, err := strconv.Atoi(sv[0])
+			err := checkSize(fieldName, cds[1])
 			if err != nil {
-				return condFormatErr(fieldName)
-			}
-			_, err = strconv.Atoi(sv[1])
-			if err != nil {
-				return condFormatErr(fieldName)
+				return err
 			}
 		}
 	}
@@ -428,7 +403,7 @@ func checkUint32(fieldName string, tvs []string) error {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !ArrayContains(SingleTypeCondSet[:], cds[0]) {
+		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -465,14 +440,9 @@ func checkUint32(fieldName string, tvs []string) error {
 				return condValLogicErr(fieldName, cds0)
 			}
 		case Size:
-			sv := strings.Split(cds[1], ",")
-			_, err := strconv.Atoi(sv[0])
+			err := checkSize(fieldName, cds[1])
 			if err != nil {
-				return condFormatErr(fieldName)
-			}
-			_, err = strconv.Atoi(sv[1])
-			if err != nil {
-				return condFormatErr(fieldName)
+				return err
 			}
 		}
 	}
@@ -490,7 +460,7 @@ func checkInt(fieldName string, tvs []string) error {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !ArrayContains(SingleTypeCondSet[:], cds[0]) {
+		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -527,14 +497,9 @@ func checkInt(fieldName string, tvs []string) error {
 				return condValLogicErr(fieldName, cds0)
 			}
 		case Size:
-			sv := strings.Split(cds[1], ",")
-			_, err := strconv.Atoi(sv[0])
+			err := checkSize(fieldName, cds[1])
 			if err != nil {
-				return condFormatErr(fieldName)
-			}
-			_, err = strconv.Atoi(sv[1])
-			if err != nil {
-				return condFormatErr(fieldName)
+				return err
 			}
 		}
 	}
@@ -552,7 +517,7 @@ func checkUint(fieldName string, tvs []string) error {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !ArrayContains(SingleTypeCondSet[:], cds[0]) {
+		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -589,14 +554,9 @@ func checkUint(fieldName string, tvs []string) error {
 				return condValLogicErr(fieldName, cds0)
 			}
 		case Size:
-			sv := strings.Split(cds[1], ",")
-			_, err := strconv.Atoi(sv[0])
+			err := checkSize(fieldName, cds[1])
 			if err != nil {
-				return condFormatErr(fieldName)
-			}
-			_, err = strconv.Atoi(sv[1])
-			if err != nil {
-				return condFormatErr(fieldName)
+				return err
 			}
 		}
 	}
@@ -614,7 +574,7 @@ func checkInt64(fieldName string, tvs []string) error {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !ArrayContains(SingleTypeCondSet[:], cds[0]) {
+		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -651,14 +611,9 @@ func checkInt64(fieldName string, tvs []string) error {
 				return condValLogicErr(fieldName, cds0)
 			}
 		case Size:
-			sv := strings.Split(cds[1], ",")
-			_, err := strconv.Atoi(sv[0])
+			err := checkSize(fieldName, cds[1])
 			if err != nil {
-				return condFormatErr(fieldName)
-			}
-			_, err = strconv.Atoi(sv[1])
-			if err != nil {
-				return condFormatErr(fieldName)
+				return err
 			}
 		}
 	}
@@ -676,7 +631,7 @@ func checkUint64(fieldName string, tvs []string) error {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !ArrayContains(SingleTypeCondSet[:], cds[0]) {
+		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -713,14 +668,9 @@ func checkUint64(fieldName string, tvs []string) error {
 				return condValLogicErr(fieldName, cds0)
 			}
 		case Size:
-			sv := strings.Split(cds[1], ",")
-			_, err := strconv.Atoi(sv[0])
+			err := checkSize(fieldName, cds[1])
 			if err != nil {
-				return condFormatErr(fieldName)
-			}
-			_, err = strconv.Atoi(sv[1])
-			if err != nil {
-				return condFormatErr(fieldName)
+				return err
 			}
 		}
 	}
@@ -738,7 +688,7 @@ func checkFloat32(fieldName string, tvs []string) error {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !ArrayContains(SingleTypeCondSet[:], cds[0]) {
+		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -775,14 +725,9 @@ func checkFloat32(fieldName string, tvs []string) error {
 				return condValLogicErr(fieldName, cds0)
 			}
 		case Size:
-			sv := strings.Split(cds[1], ",")
-			_, err := strconv.Atoi(sv[0])
+			err := checkSize(fieldName, cds[1])
 			if err != nil {
-				return condFormatErr(fieldName)
-			}
-			_, err = strconv.Atoi(sv[1])
-			if err != nil {
-				return condFormatErr(fieldName)
+				return err
 			}
 		}
 	}
@@ -800,7 +745,7 @@ func checkFloat64(fieldName string, tvs []string) error {
 			return condValNumErr(fieldName, len(cds), v)
 		}
 
-		if !ArrayContains(SingleTypeCondSet[:], cds[0]) {
+		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
 
@@ -837,14 +782,9 @@ func checkFloat64(fieldName string, tvs []string) error {
 				return condValLogicErr(fieldName, cds0)
 			}
 		case Size:
-			sv := strings.Split(cds[1], ",")
-			_, err := strconv.Atoi(sv[0])
+			err := checkSize(fieldName, cds[1])
 			if err != nil {
-				return condFormatErr(fieldName)
-			}
-			_, err = strconv.Atoi(sv[1])
-			if err != nil {
-				return condFormatErr(fieldName)
+				return err
 			}
 		}
 	}
@@ -861,18 +801,22 @@ func checkString(fieldName string, tvs []string) error {
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
-		if !ArrayContains(SingleTypeCondSet[:], cds[0]) {
+		if !ArrayContains(StringCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
-		if cds[0] == Size {
-			sv := strings.Split(cds[1], ",")
-			_, err := strconv.Atoi(sv[0])
+		switch cds[0] {
+		case Size:
+			err := checkSize(fieldName, cds[1])
 			if err != nil {
-				return condFormatErr(fieldName)
+				return err
 			}
-			_, err = strconv.Atoi(sv[1])
-			if err != nil {
-				return condFormatErr(fieldName)
+		case In:
+			if cds[1] == "" {
+				return condValLogicErr(fieldName, cds[0])
+			}
+		case Regexp:
+			if cds[1] == "" {
+				return condValLogicErr(fieldName, cds[0])
 			}
 		}
 	}
@@ -893,14 +837,9 @@ func checkSlice(fieldName string, tvs []string) error {
 			return condKeyErr(fieldName)
 		}
 		if cds[0] == Size {
-			sv := strings.Split(cds[1], ",")
-			_, err := strconv.Atoi(sv[0])
+			err := checkSize(fieldName, cds[1])
 			if err != nil {
-				return condFormatErr(fieldName)
-			}
-			_, err = strconv.Atoi(sv[1])
-			if err != nil {
-				return condFormatErr(fieldName)
+				return err
 			}
 		}
 	}
@@ -935,7 +874,10 @@ func checkStruct(v reflect.Value) error {
 		ft := t.Field(i)
 		tv := ft.Tag.Get(Nut)
 		cns := strings.Split(tv, ";")
-		return check(ft.Type, cns)
+		err := check(ft.Type, cns)
+		if err != nil {
+			return err
+		}
 
 	}
 
@@ -959,6 +901,9 @@ func checkRule(v reflect.Value) error {
 				if !ArrayContains(NumeralCondSet[:], rule[0]) {
 					return condKeyErr(tfd.Name)
 				}
+				if ArrayContains([]string{In, Type, Size}, rule[0]) {
+					continue
+				}
 				cc1[tfd.Name] += 1
 				if cc1[tfd.Name] > 1 {
 					return condRuleErr(tfd.Name)
@@ -971,7 +916,7 @@ func checkRule(v reflect.Value) error {
 				if !ArrayContains(StringCondSet[:], rule[0]) {
 					return condKeyErr(tfd.Name)
 				}
-				if rule[0] == In {
+				if ArrayContains([]string{In, Type, Regexp, Size}, rule[0]) {
 					continue
 				}
 				cc1[tfd.Name] += 1
@@ -986,7 +931,7 @@ func checkRule(v reflect.Value) error {
 				if !ArrayContains(ArrayCondSet[:], rule[0]) {
 					return condKeyErr(tfd.Name)
 				}
-				if !ArrayContains(ContainsCondSet[:], rule[0]) {
+				if ArrayContains([]string{Type, Size}, rule[0]) {
 					continue
 				}
 				cc2[tfd.Name] += 1
@@ -995,6 +940,32 @@ func checkRule(v reflect.Value) error {
 				}
 			}
 		}
+	}
+
+	return nil
+}
+
+func checkSize(fieldName, cValue string) error {
+	sv := strings.Split(cValue, ",")
+	if len(sv) == 2 {
+		min, err := strconv.ParseUint(sv[0], 10, 64)
+		if err != nil {
+			return condFormatErr(fieldName)
+		}
+		max, err := strconv.ParseUint(sv[1], 10, 64)
+		if err != nil {
+			return condFormatErr(fieldName)
+		}
+		if min >= max {
+			return condValLogicErr(fieldName, Size)
+		}
+	} else if len(sv) == 1 {
+		_, err := strconv.ParseUint(sv[0], 10, 64)
+		if err != nil {
+			return condFormatErr(fieldName)
+		}
+	} else {
+		return condValNumErr(fieldName, len(sv), Size)
 	}
 
 	return nil

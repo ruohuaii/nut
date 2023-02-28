@@ -65,7 +65,22 @@ func parse(data any) (Structure, error) {
 				case Size:
 					cvs := strings.Split(fcv[1], ",")
 					rules[fieldName] = append(rules[fieldName], Field{
-						Condition: ThrowCondSize(opt.ShortName, fieldName, cvs[0], cvs[1], kind.String()),
+						Condition: ThrowCondSize(opt.ShortName, fieldName, cvs, kind.String()),
+					})
+				case Regexp:
+					rules[fieldName] = append(rules[fieldName], Field{
+						Condition: ThrowCondRegexp(opt.ShortName, fieldName, fcv[1]),
+					})
+				case In:
+					var elemType string
+					for _, v := range fcs {
+						rule := strings.Split(v, ":")
+						if rule[0] == Type {
+							elemType = rule[1]
+						}
+					}
+					rules[fieldName] = append(rules[fieldName], Field{
+						Condition: ThrowCondIn(opt.ShortName, fieldName, fcv[1], elemType),
 					})
 				}
 			case reflect.Slice, reflect.Array:
@@ -79,16 +94,16 @@ func parse(data any) (Structure, error) {
 				switch fcv[0] {
 				case Contains:
 					rules[fieldName] = append(rules[fieldName], Field{
-						Condition: ThrowCondNContain(opt.ShortName, fieldName, fcv[1], elemType),
+						Condition: ThrowCondExcluded(opt.ShortName, fieldName, fcv[1], elemType),
 					})
-				case NContain:
+				case Excluded:
 					rules[fieldName] = append(rules[fieldName], Field{
 						Condition: ThrowCondContains(opt.ShortName, fieldName, fcv[1], elemType),
 					})
 				case Size:
 					cvs := strings.Split(fcv[1], ",")
 					rules[fieldName] = append(rules[fieldName], Field{
-						Condition: ThrowCondSize(opt.ShortName, fieldName, cvs[0], cvs[1], kind.String()),
+						Condition: ThrowCondSize(opt.ShortName, fieldName, cvs, kind.String()),
 					})
 				}
 			}

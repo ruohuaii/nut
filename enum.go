@@ -8,7 +8,6 @@ const Zero = 0
 
 //Some conditions name
 const (
-	Null     = ""
 	Eq       = "eq"
 	Neq      = "neq"
 	Gt       = "gt"
@@ -18,7 +17,7 @@ const (
 	Between  = "between"
 	In       = "in"
 	Contains = "contains"
-	NContain = "ncontain"
+	Excluded = "excluded"
 	Size     = "size"
 	Regexp   = "regexp"
 
@@ -28,13 +27,10 @@ const (
 
 //Some conditions set
 var (
-	NumeralCondSet = [7]string{Eq, Neq, Lt, Lte, Gt, Gte, Between}
-	StringCondSet  = [8]string{Eq, Neq, Lt, Lte, Gt, Gte, Between, In}
-	ArrayCondSet   = [4]string{Size, Contains, NContain, Type}
+	NumeralCondSet = [10]string{Eq, Neq, Lt, Lte, Gt, Gte, Between, In, Type, Size}
+	StringCondSet  = [11]string{Eq, Neq, Lt, Lte, Gt, Gte, Between, In, Type, Regexp, Size}
+	ArrayCondSet   = [4]string{Contains, Excluded, Type, Size}
 	BoolCondSet    = [1]string{Eq}
-
-	ContainsCondSet   = [2]string{Contains, NContain}
-	SingleTypeCondSet = [11]string{Eq, Neq, Gt, Gte, Lt, Lte, Between, In, Contains, Size}
 )
 
 const (
