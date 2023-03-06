@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func Parse(data any) (Structure, error) {
+func parse(data any) (Structure, error) {
 	opt := Structure{}
 	rt := reflect.TypeOf(data)
 
