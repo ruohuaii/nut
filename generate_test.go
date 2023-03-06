@@ -1,6 +1,8 @@
 package nut
 
-import "testing"
+import (
+	"testing"
+)
 
 func Test_Generate(t *testing.T) {
 	opt, err := Generate(Woman{

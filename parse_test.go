@@ -6,6 +6,6 @@ import (
 
 func Test_parse(t *testing.T) {
 	opt := Structure{}
-	_, err := parse(opt)
+	_, err := Parse(opt)
 	t.Log("err:", err)
 }
