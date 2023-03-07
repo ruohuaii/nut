@@ -14,6 +14,10 @@ func depthCheck(v reflect.Value) error {
 		return errors.New("exists on an unsafe type")
 	}
 
+	if v.Kind() == reflect.Pointer && !v.IsNil() {
+		v = v.Elem()
+	}
+
 	err := checkRule(v)
 	if err != nil {
 		return err

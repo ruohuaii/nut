@@ -1,17 +1,22 @@
 package nut
 
-import "reflect"
+import (
+	"reflect"
+)
 
-func Generate(data any) (*Structure, error) {
+func Generate(data any, file string) (*specimen, error) {
 	rv := reflect.ValueOf(data)
 	err := depthCheck(rv)
 	if err != nil {
 		return nil, err
 	}
 
-	opt, _ := parse(data)
+	opt, err := parse(data)
+	if err != nil {
+		return nil, err
+	}
 
-	err = FillTemplate(tpl, opt, "main.go")
+	err = FillTemplate(tpl, opt, file)
 	if err != nil {
 		return nil, err
 	}

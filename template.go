@@ -16,7 +16,7 @@ func init() {
 }
 
 var StdNutVT = `func ({{.ShortName}} {{.FullName}}) Check() error {
-{{range $k,$v:=.Rules}}{{range $v}}	{{.Condition}}
+{{range $k,$v:=.Conditions}}{{range $v}}	{{.Description}}
 {{end}}{{end}}
 	return nil
 }

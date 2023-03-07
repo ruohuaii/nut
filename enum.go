@@ -24,16 +24,19 @@ const (
 	//Type is used to describe the type of the field or the type of the array element
 	Type = "type"
 
-	//Skip is used to skip the detection of the structure
+	//Skip is used to skip the detection
 	Skip = "skip"
+
+	//Associate  Field Conditions
+	Associate = "associate"
 )
 
 //Some set of conditions
 var (
-	NumeralCondSet = [10]string{Eq, Neq, Lt, Lte, Gt, Gte, Between, In, Type, Size}
-	StringCondSet  = [11]string{Eq, Neq, Lt, Lte, Gt, Gte, Between, In, Type, Regexp, Size}
-	ArrayCondSet   = [4]string{Contains, Excluded, Type, Size}
-	BoolCondSet    = [1]string{Eq}
+	NumeralCondSet = [11]string{Eq, Neq, Lt, Lte, Gt, Gte, Between, In, Type, Size, Associate}
+	StringCondSet  = [12]string{Eq, Neq, Lt, Lte, Gt, Gte, Between, In, Type, Regexp, Size, Associate}
+	ArrayCondSet   = [5]string{Contains, Excluded, Type, Size, Associate}
+	BoolCondSet    = [2]string{Eq, Associate}
 )
 
 //Some types name

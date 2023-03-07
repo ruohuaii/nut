@@ -18,13 +18,13 @@ func Test_Template(t *testing.T) {
 		panic("模板解析:" + err.Error())
 	}
 
-	opt := Structure{
+	opt := specimen{
 		FullName:  "*Suit",
 		ShortName: "s",
-		Rules: map[string][]Field{
+		Conditions: map[string][]Condition{
 			"Name": {
 				{
-					Condition: "len(s.Name)>5",
+					Description: "len(s.Name)>5",
 				},
 			},
 		},

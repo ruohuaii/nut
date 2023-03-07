@@ -5,7 +5,7 @@ import (
 )
 
 func Test_parse(t *testing.T) {
-	opt := Structure{}
+	opt := specimen{}
 	_, err := parse(opt)
 	t.Log("err:", err)
 }
