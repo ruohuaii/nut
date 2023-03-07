@@ -3,15 +3,19 @@ package nut
 type specimen struct {
 	FullName   string
 	ShortName  string
-	Conditions map[string][]Condition
-	Associates map[string][]Relation
+	Conditions map[string]Rules
 }
 
 type Relation struct {
 	Self      string
-	Associate []string
+	Associate string
+}
+
+type Rules struct {
+	SelfRules      []Condition
+	AssociateRules []Condition
 }
 
 type Condition struct {
-	Description string
+	Rule string `json:"rule"`
 }

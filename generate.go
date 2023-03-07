@@ -11,7 +11,7 @@ func Generate(data any, file string) (*specimen, error) {
 		return nil, err
 	}
 
-	opt, err := parse(data)
+	opt, err := parse(reflect.TypeOf(data))
 	if err != nil {
 		return nil, err
 	}

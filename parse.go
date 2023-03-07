@@ -6,9 +6,8 @@ import (
 	"strings"
 )
 
-func parse(data any) (specimen, error) {
+func parse(rt reflect.Type) (specimen, error) {
 	opt := specimen{}
-	rt := reflect.TypeOf(data)
 	if rt.Kind() == reflect.Pointer {
 		rt = rt.Elem()
 	}
@@ -17,8 +16,8 @@ func parse(data any) (specimen, error) {
 	opt.FullName = fmt.Sprintf("*%s", rt.Name())
 	opt.ShortName = strings.ToLower(rt.Name()[:1])
 
-	associateRules := make(map[string][]Relation)
-	conditions := make(map[string][]Condition)
+	relationRules := make(map[string]Relation)
+	selfRules := make(map[string][]Condition)
 	for i := 0; i < rt.NumField(); i++ {
 		fieldName := rt.Field(i).Name
 		tag := rt.Field(i).Tag.Get(Nut)
@@ -38,58 +37,51 @@ func parse(data any) (specimen, error) {
 				reflect.String:
 				switch fcv[0] {
 				case Associate:
-					associateRules[fieldName] = append(associateRules[fieldName], Relation{
+					relationRules[fieldName] = Relation{
 						Self:      fieldName,
-						Associate: strings.Split(fcv[1], ","),
-					})
+						Associate: fcv[1],
+					}
 				case Eq:
-					conditions[fieldName] = append(conditions[fieldName], Condition{
-						Description: ThrowCondNeq(opt.ShortName, fieldName, fcv[1]),
+					selfRules[fieldName] = append(selfRules[fieldName], Condition{
+						Rule: ThrowCondNeq(opt.ShortName, fieldName, fcv[1]),
 					})
 				case Neq:
-					conditions[fieldName] = append(conditions[fieldName], Condition{
-						Description: ThrowCondEq(opt.ShortName, fieldName, fcv[1]),
+					selfRules[fieldName] = append(selfRules[fieldName], Condition{
+						Rule: ThrowCondEq(opt.ShortName, fieldName, fcv[1]),
 					})
 				case Lt:
-					conditions[fieldName] = append(conditions[fieldName], Condition{
-						Description: ThrowCondGte(opt.ShortName, fieldName, fcv[1]),
+					selfRules[fieldName] = append(selfRules[fieldName], Condition{
+						Rule: ThrowCondGte(opt.ShortName, fieldName, fcv[1]),
 					})
 				case Lte:
-					conditions[fieldName] = append(conditions[fieldName], Condition{
-						Description: ThrowCondGt(opt.ShortName, fieldName, fcv[1]),
+					selfRules[fieldName] = append(selfRules[fieldName], Condition{
+						Rule: ThrowCondGt(opt.ShortName, fieldName, fcv[1]),
 					})
 				case Gt:
-					conditions[fieldName] = append(conditions[fieldName], Condition{
-						Description: ThrowCondLte(opt.ShortName, fieldName, fcv[1]),
+					selfRules[fieldName] = append(selfRules[fieldName], Condition{
+						Rule: ThrowCondLte(opt.ShortName, fieldName, fcv[1]),
 					})
 				case Gte:
-					conditions[fieldName] = append(conditions[fieldName], Condition{
-						Description: ThrowCondLt(opt.ShortName, fieldName, fcv[1]),
+					selfRules[fieldName] = append(selfRules[fieldName], Condition{
+						Rule: ThrowCondLt(opt.ShortName, fieldName, fcv[1]),
 					})
 				case Between:
 					cvs := strings.Split(fcv[1], ",")
-					conditions[fieldName] = append(conditions[fieldName], Condition{
-						Description: ThrowCondBetween(opt.ShortName, fieldName, cvs[0], cvs[1]),
+					selfRules[fieldName] = append(selfRules[fieldName], Condition{
+						Rule: ThrowCondBetween(opt.ShortName, fieldName, cvs[0], cvs[1]),
 					})
 				case Size:
 					cvs := strings.Split(fcv[1], ",")
-					conditions[fieldName] = append(conditions[fieldName], Condition{
-						Description: ThrowCondSize(opt.ShortName, fieldName, cvs, kind.String()),
+					selfRules[fieldName] = append(selfRules[fieldName], Condition{
+						Rule: ThrowCondSize(opt.ShortName, fieldName, cvs, kind.String()),
 					})
 				case Regexp:
-					conditions[fieldName] = append(conditions[fieldName], Condition{
-						Description: ThrowCondRegexp(opt.ShortName, fieldName, fcv[1]),
+					selfRules[fieldName] = append(selfRules[fieldName], Condition{
+						Rule: ThrowCondRegexp(opt.ShortName, fieldName, fcv[1]),
 					})
 				case In:
-					var elemType string
-					for _, v := range fcs {
-						rule := strings.Split(v, ":")
-						if rule[0] == Type {
-							elemType = rule[1]
-						}
-					}
-					conditions[fieldName] = append(conditions[fieldName], Condition{
-						Description: ThrowCondIn(opt.ShortName, fieldName, fcv[1], elemType),
+					selfRules[fieldName] = append(selfRules[fieldName], Condition{
+						Rule: ThrowCondIn(opt.ShortName, fieldName, fcv[1], kind.String()),
 					})
 				}
 			case reflect.Slice, reflect.Array:
@@ -102,27 +94,41 @@ func parse(data any) (specimen, error) {
 				}
 				switch fcv[0] {
 				case Contains:
-					conditions[fieldName] = append(conditions[fieldName], Condition{
-						Description: ThrowCondExcluded(opt.ShortName, fieldName, fcv[1], elemType),
+					selfRules[fieldName] = append(selfRules[fieldName], Condition{
+						Rule: ThrowCondExcluded(opt.ShortName, fieldName, fcv[1], elemType),
 					})
 				case Excluded:
-					conditions[fieldName] = append(conditions[fieldName], Condition{
-						Description: ThrowCondContains(opt.ShortName, fieldName, fcv[1], elemType),
+					selfRules[fieldName] = append(selfRules[fieldName], Condition{
+						Rule: ThrowCondContains(opt.ShortName, fieldName, fcv[1], elemType),
 					})
 				case Size:
 					cvs := strings.Split(fcv[1], ",")
-					conditions[fieldName] = append(conditions[fieldName], Condition{
-						Description: ThrowCondSize(opt.ShortName, fieldName, cvs, kind.String()),
+					selfRules[fieldName] = append(selfRules[fieldName], Condition{
+						Rule: ThrowCondSize(opt.ShortName, fieldName, cvs, kind.String()),
 					})
 				}
-			case reflect.Struct:
-
 			}
 
 		}
 	}
 
-	opt.Associates = associateRules
+	associateRules := make(map[string][]Condition)
+	for k := range selfRules {
+		if m, ok := relationRules[k]; ok {
+			associateRules[m.Associate] = append(associateRules[m.Associate], selfRules[k]...)
+			delete(selfRules, k)
+		}
+	}
+
+	conditions := make(map[string]Rules)
+
+	for k, v := range selfRules {
+		conditions[k] = Rules{
+			SelfRules:      v,
+			AssociateRules: associateRules[k],
+		}
+	}
+
 	opt.Conditions = conditions
 
 	return opt, nil
