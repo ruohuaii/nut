@@ -236,3 +236,100 @@ func ThrowCondIn(shortName, fieldName string, cValue string, elemType string) st
 
 	return fmt.Sprintf(format, varName, elems, varName, shortName, fieldName, fieldName, cValue)
 }
+
+func ThrowCondType(shortName, fieldName string, elemType string) string {
+	var format string
+	varName := fmt.Sprintf("%sV", strings.ToLower(fieldName))
+	switch elemType {
+	case Int8:
+		format = `%s,err := strconv.ParseInt(%s.%s,10,64)
+	if err != nil {
+		return fmt.Errorf("the value of the %s field is wrong")
+	}
+	if %s >math.MaxInt8||%s<math.MinInt8{
+		return fmt.Errorf("the value of the %s field overflowed")
+	}`
+	case Int16:
+		format = `%s,err := strconv.ParseInt(%s.%s,10,64)
+	if err != nil {
+		return fmt.Errorf("the value of the %s field is wrong")
+	}
+	if %s >math.MaxInt16||%s<math.MinInt16{
+		return fmt.Errorf("the value of the %s field overflowed")
+	}`
+	case Int32:
+		format = `%s,err := strconv.ParseInt(%s.%s,10,64)
+	if err != nil {
+		return fmt.Errorf("the value of the %s field is wrong")
+	}
+	if %s >math.MaxInt32||%s<math.MinInt32{
+		return fmt.Errorf("the value of the %s field overflowed")
+	}`
+	case Int:
+		format = `%s,err := strconv.ParseInt(%s.%s,10,64)
+	if err != nil {
+		return fmt.Errorf("the value of the %s field is wrong")
+	}
+	if %s >math.MaxInt||%s<math.MinInt{
+		return fmt.Errorf("the value of the %s field overflowed")
+	}`
+	case Int64:
+		format = `%s,err := strconv.ParseInt(%s.%s,10,64)
+	if err != nil {
+		return fmt.Errorf("the value of the %s field is wrong")
+	}
+	if %s >math.MaxInt64||%s<math.MinInt64{
+		return fmt.Errorf("the value of the %s field overflowed")
+	}`
+	case Uint8:
+		format = `%s,err := strconv.ParseUint(%s.%s,10,64)
+	if err != nil {
+		return fmt.Errorf("the value of the %s field is wrong")
+	}
+	if %s >math.MaxUint8||%s<math.MinUint8{
+		return fmt.Errorf("the value of the %s field overflowed")
+	}`
+	case Uint16:
+		format = `%s,err := strconv.ParseUint(%s.%s,10,64)
+	if err != nil {
+		return fmt.Errorf("the value of the %s field is wrong")
+	}
+	if %s >math.MaxUint16||%s<math.MinUint16{
+		return fmt.Errorf("the value of the %s field overflowed")
+	}`
+	case Uint32:
+		format = `%s,err := strconv.ParseUint(%s.%s,10,64)
+	if err != nil {
+		return fmt.Errorf("the value of the %s field is wrong")
+	}
+	if %s >math.MaxUint32||%s<math.MinUint32{
+		return fmt.Errorf("the value of the %s field overflowed")
+	}`
+	case Uint64:
+		format = `%s,err := strconv.ParseUint(%s.%s,10,64)
+	if err != nil {
+		return fmt.Errorf("the value of the %s field is wrong")
+	}
+	if %s >math.MaxUint64||%s<math.MinUint64{
+		return fmt.Errorf("the value of the %s field overflowed")
+	}`
+	case Float32:
+		format = `%s,err := strconv.ParseFloat(%s.%s,32)
+	if err != nil {
+		return fmt.Errorf("the value of the %s field is wrong")
+	}
+	if %s >math.MaxFloat32||%s<math.SmallestNonzeroFloat32{
+		return fmt.Errorf("the value of the %s field overflowed")
+	}`
+	case Float64:
+		format = `%s,err := strconv.ParseFloat(%s.%s,64)
+	if err != nil {
+		return fmt.Errorf("the value of the %s field is wrong")
+	}
+	if %s >math.MaxFloat64||%s<math.SmallestNonzeroFloat64{
+		return fmt.Errorf("the value of the %s field overflowed")
+	}`
+	}
+
+	return fmt.Sprintf(format, varName, shortName, fieldName, fieldName, varName, varName, fieldName)
+}

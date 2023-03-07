@@ -83,6 +83,17 @@ func parse(rt reflect.Type) (specimen, error) {
 					selfRules[fieldName] = append(selfRules[fieldName], Condition{
 						Rule: ThrowCondIn(opt.ShortName, fieldName, fcv[1], kind.String()),
 					})
+				case Type:
+					var elemType string
+					for _, v := range fcs {
+						rule := strings.Split(v, ":")
+						if rule[0] == Type {
+							elemType = rule[1]
+						}
+					}
+					selfRules[fieldName] = append(selfRules[fieldName], Condition{
+						Rule: ThrowCondType(opt.ShortName, fieldName, elemType),
+					})
 				}
 			case reflect.Slice, reflect.Array:
 				var elemType string
