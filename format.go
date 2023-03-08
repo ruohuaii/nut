@@ -21,28 +21,28 @@ func ThrowCondNeq(shortName, fieldName string, cValue any) string {
 
 func ThrowCondLt(shortName, fieldName string, cValue any) string {
 	format := `if %s.%s < %v {
-     	return fmt.Errorf("the value of %s field should be less than %v")
+		return fmt.Errorf("the value of %s field should be greater than or equal to %v")
 	}`
 	return fmt.Sprintf(format, shortName, fieldName, cValue, fieldName, cValue)
 }
 
 func ThrowCondLte(shortName, fieldName string, cValue any) string {
 	format := `if %s.%s <= %v {
-     	return fmt.Errorf("the value of %s field should be less than or equal to %v")
+		return fmt.Errorf("the value of %s field should be greater than %v")
 	}`
 	return fmt.Sprintf(format, shortName, fieldName, cValue, fieldName, cValue)
 }
 
 func ThrowCondGt(shortName, fieldName string, cValue any) string {
 	format := `if %s.%s > %v {
-     	return fmt.Errorf("the value of %s field should be greater than %v")
+		return fmt.Errorf("the value of %s field should be less than or equal to %v")
 	}`
 	return fmt.Sprintf(format, shortName, fieldName, cValue, fieldName, cValue)
 }
 
 func ThrowCondGte(shortName, fieldName string, cValue any) string {
 	format := `if %s.%s >= %v {
-     	return fmt.Errorf("the value of %s field should be greater than or equal to %v")
+		return fmt.Errorf("the value of %s field should be less than %v")
 	}`
 	return fmt.Sprintf(format, shortName, fieldName, cValue, fieldName, cValue)
 }
