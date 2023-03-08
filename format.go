@@ -352,10 +352,10 @@ func ThrowCondStruct(shortName, fieldName, structName string, isOptional bool, i
 		return fmt.Errorf("field %s is Required")
 	}
 	%s := %s.%s.Check()
-	if err != nil {
+	if %s != nil {
 		return %s
 	}`
-			return fmt.Sprintf(format, shortName, fieldName, structName, fieldName, varName, shortName, fieldName, varName)
+			return fmt.Sprintf(format, shortName, fieldName, structName, fieldName, varName, shortName, fieldName, varName, varName)
 		}
 	} else {
 		if isOptional {
@@ -373,10 +373,10 @@ func ThrowCondStruct(shortName, fieldName, structName string, isOptional bool, i
 		return fmt.Errorf("field %s is Required")
 	}
 	%s := %s.%s.Check()
-	if err != nil {
+	if %s != nil {
 		return %s
 	}`
-			return fmt.Sprintf(format, shortName, fieldName, fieldName, varName, shortName, fieldName, varName)
+			return fmt.Sprintf(format, shortName, fieldName, fieldName, varName, shortName, fieldName, varName, varName)
 		}
 	}
 }
