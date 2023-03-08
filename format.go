@@ -120,44 +120,7 @@ func ThrowCondSize(shortName, fieldName string, cvs []string, fieldType string) 
 }
 
 func ThrowCondContains(shortName, fieldName string, cValue string, elemType string) string {
-	var elems string
-	vs := strings.Split(cValue, ",")
-	switch elemType {
-	case Int8:
-		elems = "[]int8{"
-	case Int16:
-		elems = "[]int16{"
-	case Int32:
-		elems = "[]int32{"
-	case Int:
-		elems = "[]int{"
-	case Int64:
-		elems = "[]int64{"
-	case Uint8:
-		elems = "[]uint8{"
-	case Uint16:
-		elems = "[]uint16{"
-	case Uint32:
-		elems = "[]uint32{"
-	case Uint:
-		elems = "[]uint{"
-	case Uint64:
-		elems = "[]uint64{"
-	case Float32:
-		elems = "[]float32{"
-	case Float64:
-		elems = "[]float64{"
-	case String:
-		elems = "[]string{"
-	}
-	for i := 0; i < len(vs); i++ {
-		if elemType == String {
-			elems += fmt.Sprintf("%q,", vs[i])
-		} else {
-			elems += fmt.Sprintf("%v,", vs[i])
-		}
-	}
-	elems = strings.TrimRight(elems, ",") + "}"
+	elems := elemsBuilder(elemType, cValue)
 	varName := fmt.Sprintf("%s%sContains", strings.ToLower(fieldName[:1]), fieldName[1:])
 	format := `var %s= %s
 	for i:=0;i<len(%s);i++{
@@ -170,44 +133,7 @@ func ThrowCondContains(shortName, fieldName string, cValue string, elemType stri
 }
 
 func ThrowCondExcluded(shortName, fieldName string, cValue string, elemType string) string {
-	var elems string
-	vs := strings.Split(cValue, ",")
-	switch elemType {
-	case Int8:
-		elems = "[]int8{"
-	case Int16:
-		elems = "[]int16{"
-	case Int32:
-		elems = "[]int32{"
-	case Int:
-		elems = "[]int{"
-	case Int64:
-		elems = "[]int64{"
-	case Uint8:
-		elems = "[]uint8{"
-	case Uint16:
-		elems = "[]uint16{"
-	case Uint32:
-		elems = "[]uint32{"
-	case Uint:
-		elems = "[]uint{"
-	case Uint64:
-		elems = "[]uint64{"
-	case Float32:
-		elems = "[]float32{"
-	case Float64:
-		elems = "[]float64{"
-	case String:
-		elems = "[]string{"
-	}
-	for i := 0; i < len(vs); i++ {
-		if elemType == String {
-			elems += fmt.Sprintf("%q,", vs[i])
-		} else {
-			elems += fmt.Sprintf("%v,", vs[i])
-		}
-	}
-	elems = strings.TrimRight(elems, ",") + "}"
+	elems := elemsBuilder(elemType, cValue)
 	varName := fmt.Sprintf("%s%sExcluded", strings.ToLower(fieldName[:1]), fieldName[1:])
 	format := `var %s = %s
 	for i:=0;i<len(%s);i++{
@@ -220,44 +146,7 @@ func ThrowCondExcluded(shortName, fieldName string, cValue string, elemType stri
 }
 
 func ThrowCondIn(shortName, fieldName string, cValue string, elemType string) string {
-	var elems string
-	vs := strings.Split(cValue, ",")
-	switch elemType {
-	case Int8:
-		elems = "[]int8{"
-	case Int16:
-		elems = "[]int16{"
-	case Int32:
-		elems = "[]int32{"
-	case Int:
-		elems = "[]int{"
-	case Int64:
-		elems = "[]int64{"
-	case Uint8:
-		elems = "[]uint8{"
-	case Uint16:
-		elems = "[]uint16{"
-	case Uint32:
-		elems = "[]uint32{"
-	case Uint:
-		elems = "[]uint{"
-	case Uint64:
-		elems = "[]uint64{"
-	case Float32:
-		elems = "[]float32{"
-	case Float64:
-		elems = "[]float64{"
-	case String:
-		elems = "[]string{"
-	}
-	for i := 0; i < len(vs); i++ {
-		if elemType == String {
-			elems += fmt.Sprintf("%q,", vs[i])
-		} else {
-			elems += fmt.Sprintf("%v,", vs[i])
-		}
-	}
-	elems = strings.TrimRight(elems, ",") + "}"
+	elems := elemsBuilder(elemType, cValue)
 	varName := fmt.Sprintf("%s%sIn", strings.ToLower(fieldName[:1]), fieldName[1:])
 	format := `var %s = %s
 	if !ArrayContains(%s,%s.%s) {
@@ -408,4 +297,47 @@ func ThrowCondStruct(shortName, fieldName, structName string, isOptional bool, i
 			return fmt.Sprintf(format, shortName, fieldName, fieldName, varName, shortName, fieldName, varName, varName)
 		}
 	}
+}
+
+func elemsBuilder(elemType string, cValue string) string {
+	var elems string
+	vs := strings.Split(cValue, ",")
+	switch elemType {
+	case Int8:
+		elems = "[]int8{"
+	case Int16:
+		elems = "[]int16{"
+	case Int32:
+		elems = "[]int32{"
+	case Int:
+		elems = "[]int{"
+	case Int64:
+		elems = "[]int64{"
+	case Uint8:
+		elems = "[]uint8{"
+	case Uint16:
+		elems = "[]uint16{"
+	case Uint32:
+		elems = "[]uint32{"
+	case Uint:
+		elems = "[]uint{"
+	case Uint64:
+		elems = "[]uint64{"
+	case Float32:
+		elems = "[]float32{"
+	case Float64:
+		elems = "[]float64{"
+	case String:
+		elems = "[]string{"
+	}
+	for i := 0; i < len(vs); i++ {
+		if elemType == String {
+			elems += fmt.Sprintf("%q,", vs[i])
+		} else {
+			elems += fmt.Sprintf("%v,", vs[i])
+		}
+	}
+	elems = strings.TrimRight(elems, ",") + "}"
+
+	return elems
 }
