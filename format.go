@@ -333,3 +333,50 @@ func ThrowCondType(shortName, fieldName string, elemType string) string {
 
 	return fmt.Sprintf(format, varName, shortName, fieldName, fieldName, varName, varName, fieldName)
 }
+
+func ThrowCondStruct(shortName, fieldName, structName string, isOptional bool, isPtr bool) string {
+	var format string
+	if !isPtr {
+		if isOptional {
+			format = `if reflect.DeepEqual(%s.%s,%s{}){
+		err := %s.%s.Check()
+		if err != nil {
+			return err
+		}
+	}`
+			return fmt.Sprintf(format, shortName, fieldName, structName, shortName, fieldName)
+
+		} else {
+			varName := fmt.Sprintf("%sCheckErr", strings.ToLower(fieldName))
+			format = `if reflect.DeepEqual(%s.%s,%s{}){
+		return fmt.Errorf("field %s is Required")
+	}
+	%s := %s.%s.Check()
+	if err != nil {
+		return %s
+	}`
+			return fmt.Sprintf(format, shortName, fieldName, structName, fieldName, varName, shortName, fieldName, varName)
+		}
+	} else {
+		if isOptional {
+			format = `if %s.%s!=nil{
+		err := %s.%s.Check()
+		if err != nil {
+			return err
+		}
+	}`
+			return fmt.Sprintf(format, shortName, fieldName, shortName, fieldName)
+
+		} else {
+			varName := fmt.Sprintf("%sCheckErr", strings.ToLower(fieldName))
+			format = `if %s.%s==nil{
+		return fmt.Errorf("field %s is Required")
+	}
+	%s := %s.%s.Check()
+	if err != nil {
+		return %s
+	}`
+			return fmt.Sprintf(format, shortName, fieldName, fieldName, varName, shortName, fieldName, varName)
+		}
+	}
+}

@@ -6,6 +6,11 @@ const Nut = "nut"
 //Zero is the underlying value of the numeric type
 const Zero = 0
 
+//Semicolon is the tag separator
+const Semicolon = ";"
+
+const StringNull = ""
+
 //Some condition names
 const (
 	Eq       = "eq"
@@ -24,8 +29,8 @@ const (
 	//Type is used to describe the type of the field or the type of the array element
 	Type = "type"
 
-	//Skip is used to skip the detection
-	Skip = "skip"
+	Optional = "optional"
+	Required = "required"
 
 	//Associate  Field Conditions
 	Associate = "associate"
@@ -37,6 +42,7 @@ var (
 	StringCondSet  = [12]string{Eq, Neq, Lt, Lte, Gt, Gte, Between, In, Type, Regexp, Size, Associate}
 	ArrayCondSet   = [5]string{Contains, Excluded, Type, Size, Associate}
 	BoolCondSet    = [2]string{Eq, Associate}
+	StructCondSet  = [2]string{Required, Optional}
 )
 
 //Some types name
@@ -55,3 +61,5 @@ const (
 	Float64 = "float64"
 	String  = "string"
 )
+
+const StructField = "StructField"

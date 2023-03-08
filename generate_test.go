@@ -5,7 +5,7 @@ import (
 )
 
 func Test_Generate(t *testing.T) {
-	_, err := Generate(Woman{
+	err := Generate(Woman{
 		Age: 12,
 	}, "woman_example.go")
 

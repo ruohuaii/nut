@@ -6,8 +6,9 @@ import (
 	"strings"
 )
 
-func parse(rt reflect.Type) (specimen, error) {
-	opt := specimen{}
+func parse(rt reflect.Type, isStructField bool, fieldName string, mainShortName string, isOptional, isPtr bool) (
+	*specimen, Condition, error) {
+	opt := &specimen{}
 	if rt.Kind() == reflect.Pointer {
 		rt = rt.Elem()
 	}
@@ -18,6 +19,7 @@ func parse(rt reflect.Type) (specimen, error) {
 
 	relationRules := make(map[string]Relation)
 	selfRules := make(map[string][]Condition)
+	var structFieldCond Condition
 	for i := 0; i < rt.NumField(); i++ {
 		fieldName := rt.Field(i).Name
 		tag := rt.Field(i).Tag.Get(Nut)
@@ -119,7 +121,12 @@ func parse(rt reflect.Type) (specimen, error) {
 					})
 				}
 			}
+		}
+	}
 
+	if isStructField {
+		structFieldCond = Condition{
+			Rule: ThrowCondStruct(mainShortName, fieldName, rt.Name(), isOptional, isPtr),
 		}
 	}
 
@@ -142,5 +149,33 @@ func parse(rt reflect.Type) (specimen, error) {
 
 	opt.Conditions = conditions
 
-	return opt, nil
+	return opt, structFieldCond, nil
+}
+
+func pickStruct(mainType reflect.Type) []FieldStruct {
+	types := make([]FieldStruct, 0)
+	for i := 0; i < mainType.NumField(); i++ {
+		fieldType := mainType.Field(i).Type
+		switch fieldType.Kind() {
+		case reflect.Struct:
+			types = append(types, FieldStruct{
+				FieldName:  mainType.Field(i).Name,
+				Type:       fieldType,
+				IsOptional: strings.Contains(mainType.Field(i).Tag.Get(Nut), Optional),
+				IsPtr:      false,
+			})
+		case reflect.Pointer:
+			fieldType := mainType.Field(i).Type.Elem()
+			if fieldType.Kind() == reflect.Struct {
+				types = append(types, FieldStruct{
+					FieldName:  mainType.Field(i).Name,
+					Type:       fieldType,
+					IsOptional: strings.Contains(mainType.Field(i).Tag.Get(Nut), Optional),
+					IsPtr:      true,
+				})
+			}
+		}
+	}
+
+	return types
 }

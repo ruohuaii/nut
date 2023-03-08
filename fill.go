@@ -7,7 +7,7 @@ import (
 	"text/template"
 )
 
-func FillTemplate(tpl *template.Template, data specimen, saveFile string) error {
+func FillTemplate(tpl *template.Template, data *specimen, saveFile string) error {
 	buf := &bytes.Buffer{}
 	err := tpl.Execute(buf, data)
 	if err != nil {

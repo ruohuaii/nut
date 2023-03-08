@@ -14,10 +14,6 @@ func depthCheck(v reflect.Value) error {
 		return errors.New("exists on an unsafe type")
 	}
 
-	if v.Kind() == reflect.Pointer && !v.IsNil() {
-		v = v.Elem()
-	}
-
 	err := checkRule(v)
 	if err != nil {
 		return err
@@ -28,7 +24,9 @@ func depthCheck(v reflect.Value) error {
 		fv := v.Field(i)
 		switch fv.Kind() {
 		case reflect.Struct:
-			err := checkStruct(fv)
+			fieldName := t.Field(i).Name
+			tag := t.Field(i).Tag.Get(Nut)
+			err := checkStruct(fv, fieldName, tag)
 			if err != nil {
 				return err
 			}
@@ -39,14 +37,16 @@ func depthCheck(v reflect.Value) error {
 			fvc := fv.Elem()
 			switch fvc.Kind() {
 			case reflect.Struct:
-				err := checkStruct(fvc)
+				fieldName := t.Field(i).Name
+				tag := t.Field(i).Tag.Get(Nut)
+				err := checkStruct(fvc, fieldName, tag)
 				if err != nil {
 					return err
 				}
 			default:
 				ft := t.Field(i)
 				tv := ft.Tag.Get(Nut)
-				cns := strings.Split(tv, ";")
+				cns := strings.Split(tv, Semicolon)
 				err := check(fvc.Type(), cns)
 				if err != nil {
 					return err
@@ -55,7 +55,7 @@ func depthCheck(v reflect.Value) error {
 		case reflect.Slice, reflect.Array:
 			ft := t.Field(i)
 			tv := ft.Tag.Get(Nut)
-			cns := strings.Split(tv, ";")
+			cns := strings.Split(tv, Semicolon)
 			err := checkSlice(t.Field(i).Name, cns)
 			if err != nil {
 				return err
@@ -63,7 +63,7 @@ func depthCheck(v reflect.Value) error {
 		default:
 			ft := t.Field(i)
 			tv := ft.Tag.Get(Nut)
-			cns := strings.Split(tv, ";")
+			cns := strings.Split(tv, Semicolon)
 			err := check(ft.Type, cns)
 			if err != nil {
 				return err
@@ -109,6 +109,7 @@ func check(field reflect.Type, tvs []string) error {
 		return checkSlice(fieldName, tvs)
 	case reflect.Bool:
 		return checkBool(fieldName, tvs)
+
 	}
 
 	return nil
@@ -868,9 +869,22 @@ func checkBool(fieldName string, tvs []string) error {
 	return nil
 }
 
-func checkStruct(v reflect.Value) error {
+func checkStruct(v reflect.Value, fieldName string, tag string) error {
 	if !v.CanInterface() {
 		return errors.New("exists on an unsafe type")
+	}
+
+	if tag == "" {
+		return nil
+	}
+
+	tvs := strings.Split(tag, Semicolon)
+	if len(tvs) != 1 {
+		return condKeyErr(fieldName)
+	}
+
+	if !ArrayContains(StructCondSet[:], tvs[0]) {
+		return condKeyErr(fieldName)
 	}
 
 	t := v.Type()

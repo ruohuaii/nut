@@ -1,5 +1,7 @@
 package nut
 
+import "reflect"
+
 type specimen struct {
 	FullName   string
 	ShortName  string
@@ -17,5 +19,12 @@ type Rules struct {
 }
 
 type Condition struct {
-	Rule string `json:"rule"`
+	Rule string
+}
+
+type FieldStruct struct {
+	FieldName  string
+	Type       reflect.Type
+	IsOptional bool
+	IsPtr      bool
 }
