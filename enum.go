@@ -39,10 +39,11 @@ const (
 //Some set of conditions
 var (
 	NumeralCondSet = [11]string{Eq, Neq, Lt, Lte, Gt, Gte, Between, In, Type, Size, Associate}
-	StringCondSet  = [12]string{Eq, Neq, Lt, Lte, Gt, Gte, Between, In, Type, Regexp, Size, Associate}
+	StringCondSet  = [7]string{Eq, Neq, In, Type, Regexp, Size, Associate}
 	ArrayCondSet   = [5]string{Contains, Excluded, Type, Size, Associate}
 	BoolCondSet    = [2]string{Eq, Associate}
 	StructCondSet  = [2]string{Required, Optional}
+	Types          = [13]string{Int8, Int16, Int32, Int, Int64, Uint8, Uint16, Uint32, Uint, Uint64, Float32, Float64, String}
 )
 
 //Some types name
@@ -56,6 +57,7 @@ const (
 	Uint8   = "uint8"
 	Uint16  = "uint16"
 	Uint32  = "uint32"
+	Uint    = "uint"
 	Uint64  = "uint64"
 	Float32 = "float32"
 	Float64 = "float64"

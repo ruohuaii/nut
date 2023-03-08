@@ -44,12 +44,20 @@ func parse(rt reflect.Type, isStructField bool, fieldName string, mainShortName 
 						Associate: fcv[1],
 					}
 				case Eq:
+					isString := false
+					if kind == reflect.String {
+						isString = true
+					}
 					selfRules[fieldName] = append(selfRules[fieldName], Condition{
-						Rule: ThrowCondNeq(opt.ShortName, fieldName, fcv[1]),
+						Rule: ThrowCondNeq(opt.ShortName, fieldName, fcv[1], isString),
 					})
 				case Neq:
+					isString := false
+					if kind == reflect.String {
+						isString = true
+					}
 					selfRules[fieldName] = append(selfRules[fieldName], Condition{
-						Rule: ThrowCondEq(opt.ShortName, fieldName, fcv[1]),
+						Rule: ThrowCondEq(opt.ShortName, fieldName, fcv[1], isString),
 					})
 				case Lt:
 					selfRules[fieldName] = append(selfRules[fieldName], Condition{

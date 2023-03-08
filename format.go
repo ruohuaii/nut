@@ -5,17 +5,33 @@ import (
 	"strings"
 )
 
-func ThrowCondEq(shortName, fieldName string, cValue any) string {
-	format := `if %s.%s == %v {
+func ThrowCondEq(shortName, fieldName string, cValue any, isString bool) string {
+	var format string
+	if !isString {
+		format = `if %s.%s == %v {
      	return fmt.Errorf("the value of %s field should not be equal to %v")
 	}`
+	} else {
+		format = `if %s.%s == "%v" {
+     	return fmt.Errorf("the value of %s field should not be equal to %v")
+	}`
+	}
+
 	return fmt.Sprintf(format, shortName, fieldName, cValue, fieldName, cValue)
 }
 
-func ThrowCondNeq(shortName, fieldName string, cValue any) string {
-	format := `if %s.%s != %v {
+func ThrowCondNeq(shortName, fieldName string, cValue any, isString bool) string {
+	var format string
+	if !isString {
+		format = `if %s.%s != %v {
      	return fmt.Errorf("the value of %s field should be equal to %v")
 	}`
+	} else {
+		format = `if %s.%s != "%v" {
+     	return fmt.Errorf("the value of %s field should be equal to %v")
+	}`
+	}
+
 	return fmt.Sprintf(format, shortName, fieldName, cValue, fieldName, cValue)
 }
 
@@ -123,6 +139,8 @@ func ThrowCondContains(shortName, fieldName string, cValue string, elemType stri
 		elems = "[]uint16{"
 	case Uint32:
 		elems = "[]uint32{"
+	case Uint:
+		elems = "[]uint{"
 	case Uint64:
 		elems = "[]uint64{"
 	case Float32:
@@ -133,14 +151,18 @@ func ThrowCondContains(shortName, fieldName string, cValue string, elemType stri
 		elems = "[]string{"
 	}
 	for i := 0; i < len(vs); i++ {
-		elems += vs[i] + ","
+		if elemType == String {
+			elems += fmt.Sprintf("%q,", vs[i])
+		} else {
+			elems += fmt.Sprintf("%v,", vs[i])
+		}
 	}
 	elems = strings.TrimRight(elems, ",") + "}"
-	varName := fmt.Sprintf("%sContains", strings.ToLower(fieldName))
+	varName := fmt.Sprintf("%s%sContains", strings.ToLower(fieldName[:1]), fieldName[1:])
 	format := `var %s= %s
 	for i:=0;i<len(%s);i++{
 		if ArrayContains(%s.%s,%s[i]) {
-			return fmt.Errorf("the value of the %s field must contain %s")
+			return fmt.Errorf("the value of the %s field cannot contain %s")
 		}
 	}`
 
@@ -167,6 +189,8 @@ func ThrowCondExcluded(shortName, fieldName string, cValue string, elemType stri
 		elems = "[]uint16{"
 	case Uint32:
 		elems = "[]uint32{"
+	case Uint:
+		elems = "[]uint{"
 	case Uint64:
 		elems = "[]uint64{"
 	case Float32:
@@ -177,14 +201,18 @@ func ThrowCondExcluded(shortName, fieldName string, cValue string, elemType stri
 		elems = "[]string{"
 	}
 	for i := 0; i < len(vs); i++ {
-		elems += vs[i] + ","
+		if elemType == String {
+			elems += fmt.Sprintf("%q,", vs[i])
+		} else {
+			elems += fmt.Sprintf("%v,", vs[i])
+		}
 	}
 	elems = strings.TrimRight(elems, ",") + "}"
-	varName := fmt.Sprintf("%sExcluded", strings.ToLower(fieldName))
+	varName := fmt.Sprintf("%s%sExcluded", strings.ToLower(fieldName[:1]), fieldName[1:])
 	format := `var %s = %s
 	for i:=0;i<len(%s);i++{
 		if !ArrayContains(%s.%s,%s[i]) {
-			return fmt.Errorf("the value of the %s field cannot contain %s")
+			return fmt.Errorf("the value of the %s field must contain %s")
 		}
 	}`
 
@@ -211,6 +239,8 @@ func ThrowCondIn(shortName, fieldName string, cValue string, elemType string) st
 		elems = "[]uint16{"
 	case Uint32:
 		elems = "[]uint32{"
+	case Uint:
+		elems = "[]uint{"
 	case Uint64:
 		elems = "[]uint64{"
 	case Float32:
@@ -228,10 +258,10 @@ func ThrowCondIn(shortName, fieldName string, cValue string, elemType string) st
 		}
 	}
 	elems = strings.TrimRight(elems, ",") + "}"
-	varName := fmt.Sprintf("%sIn", strings.ToLower(fieldName))
+	varName := fmt.Sprintf("%s%sIn", strings.ToLower(fieldName[:1]), fieldName[1:])
 	format := `var %s = %s
 	if !ArrayContains(%s,%s.%s) {
-		return fmt.Errorf("the value of the %s field is not in %s")
+		return fmt.Errorf("the value of the %s field should be one of %s")
 	}`
 
 	return fmt.Sprintf(format, varName, elems, varName, shortName, fieldName, fieldName, cValue)
@@ -239,7 +269,7 @@ func ThrowCondIn(shortName, fieldName string, cValue string, elemType string) st
 
 func ThrowCondType(shortName, fieldName string, elemType string) string {
 	var format string
-	varName := fmt.Sprintf("%sV", strings.ToLower(fieldName))
+	varName := fmt.Sprintf("%s%sVal", strings.ToLower(fieldName[:1]), fieldName[1:])
 	switch elemType {
 	case Int8:
 		format = `%s,err := strconv.ParseInt(%s.%s,10,64)
@@ -286,7 +316,7 @@ func ThrowCondType(shortName, fieldName string, elemType string) string {
 	if err != nil {
 		return fmt.Errorf("the value of the %s field is wrong")
 	}
-	if %s >math.MaxUint8||%s<math.MinUint8{
+	if %s >math.MaxUint8||%s<0{
 		return fmt.Errorf("the value of the %s field overflowed")
 	}`
 	case Uint16:
@@ -294,7 +324,7 @@ func ThrowCondType(shortName, fieldName string, elemType string) string {
 	if err != nil {
 		return fmt.Errorf("the value of the %s field is wrong")
 	}
-	if %s >math.MaxUint16||%s<math.MinUint16{
+	if %s >math.MaxUint16||%s<0{
 		return fmt.Errorf("the value of the %s field overflowed")
 	}`
 	case Uint32:
@@ -302,7 +332,7 @@ func ThrowCondType(shortName, fieldName string, elemType string) string {
 	if err != nil {
 		return fmt.Errorf("the value of the %s field is wrong")
 	}
-	if %s >math.MaxUint32||%s<math.MinUint32{
+	if %s >math.MaxUint32||%s<0{
 		return fmt.Errorf("the value of the %s field overflowed")
 	}`
 	case Uint64:
@@ -310,7 +340,7 @@ func ThrowCondType(shortName, fieldName string, elemType string) string {
 	if err != nil {
 		return fmt.Errorf("the value of the %s field is wrong")
 	}
-	if %s >math.MaxUint64||%s<math.MinUint64{
+	if %s >math.MaxUint64||%s<0{
 		return fmt.Errorf("the value of the %s field overflowed")
 	}`
 	case Float32:
@@ -336,6 +366,7 @@ func ThrowCondType(shortName, fieldName string, elemType string) string {
 
 func ThrowCondStruct(shortName, fieldName, structName string, isOptional bool, isPtr bool) string {
 	var format string
+	varName := fmt.Sprintf("%s%sCheckErr", strings.ToLower(fieldName[:1]), fieldName[1:])
 	if !isPtr {
 		if isOptional {
 			format = `if reflect.DeepEqual(%s.%s,%s{}){
@@ -347,7 +378,6 @@ func ThrowCondStruct(shortName, fieldName, structName string, isOptional bool, i
 			return fmt.Sprintf(format, shortName, fieldName, structName, shortName, fieldName)
 
 		} else {
-			varName := fmt.Sprintf("%sCheckErr", strings.ToLower(fieldName))
 			format = `if reflect.DeepEqual(%s.%s,%s{}){
 		return fmt.Errorf("field %s is Required")
 	}
@@ -368,7 +398,6 @@ func ThrowCondStruct(shortName, fieldName, structName string, isOptional bool, i
 			return fmt.Sprintf(format, shortName, fieldName, shortName, fieldName)
 
 		} else {
-			varName := fmt.Sprintf("%sCheckErr", strings.ToLower(fieldName))
 			format = `if %s.%s==nil{
 		return fmt.Errorf("field %s is Required")
 	}

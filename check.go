@@ -841,10 +841,25 @@ func checkSlice(fieldName string, tvs []string) error {
 		if !ArrayContains(ArrayCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
-		if cds[0] == Size {
+		switch cds[0] {
+		case Size:
 			err := checkSize(fieldName, cds[1])
 			if err != nil {
 				return err
+			}
+		case Contains, Excluded:
+			var elemType string
+			for _, m := range tvs {
+				rule := strings.Split(m, ":")
+				if rule[0] == Type {
+					elemType = rule[1]
+				}
+			}
+			if elemType == "" {
+				return condNeedType(fieldName)
+			}
+			if !ArrayContains(Types[:], elemType) {
+				return condNeedType(fieldName)
 			}
 		}
 	}
@@ -1009,6 +1024,10 @@ func condValNumErr(fieldName string, n int, kind string) error {
 
 func condValLogicErr(fieldName string, kind string) error {
 	return fmt.Errorf("the condition of field %q is %s, but the condition value logic is wrong", fieldName, kind)
+}
+
+func condNeedType(fieldName string) error {
+	return fmt.Errorf(`the conditional value of the %q field need tag "type"`, fieldName)
 }
 
 func overflowErr(fieldName string) error {
