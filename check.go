@@ -922,8 +922,11 @@ func checkRule(v reflect.Value) error {
 	cc2 := make(map[string]int8)
 	ft := v.Type()
 	for i := 0; i < v.NumField(); i++ {
-		vfd := v.Field(i)
 		tfd := ft.Field(i)
+		if tfd.Tag.Get(Nut) == StringNull {
+			continue
+		}
+		vfd := v.Field(i)
 		switch vfd.Kind() {
 		case reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int, reflect.Int64,
 			reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint, reflect.Uint64,
