@@ -3,7 +3,6 @@ package nut
 import (
 	"errors"
 	"fmt"
-	"math"
 	"reflect"
 	"strconv"
 	"strings"
@@ -130,12 +129,9 @@ func checkInt8(fieldName string, tvs []string) error {
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
-			tv, err := strconv.Atoi(cds[1])
+			_, err := strconv.Atoi(cds[1])
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if tv > math.MaxInt8 || tv < math.MinInt8 {
-				return overflowErr(fieldName)
 			}
 		case Between:
 			cvs := strings.Split(cds[1], ",")
@@ -146,15 +142,9 @@ func checkInt8(fieldName string, tvs []string) error {
 			if err != nil {
 				return condFormatErr(fieldName)
 			}
-			if left > math.MaxInt8 || left < math.MinInt8 {
-				return overflowErr(fieldName)
-			}
 			right, err := strconv.Atoi(cvs[1])
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if right > math.MaxInt8 || right < math.MinInt8 {
-				return overflowErr(fieldName)
 			}
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
@@ -187,12 +177,9 @@ func checkUint8(fieldName string, tvs []string) error {
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
-			tv, err := strconv.Atoi(cds[1])
+			_, err := strconv.Atoi(cds[1])
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if tv > math.MaxUint8 || tv < Zero {
-				return overflowErr(fieldName)
 			}
 		case Between:
 			cvs := strings.Split(cds[1], ",")
@@ -203,15 +190,9 @@ func checkUint8(fieldName string, tvs []string) error {
 			if err != nil {
 				return condFormatErr(fieldName)
 			}
-			if left > math.MaxUint8 || left < Zero {
-				return overflowErr(fieldName)
-			}
 			right, err := strconv.Atoi(cvs[1])
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if right > math.MaxUint8 || right < Zero {
-				return overflowErr(fieldName)
 			}
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
@@ -244,12 +225,9 @@ func checkInt16(fieldName string, tvs []string) error {
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
-			tv, err := strconv.Atoi(cds[1])
+			_, err := strconv.Atoi(cds[1])
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if tv > math.MaxInt16 || tv < math.MinInt16 {
-				return overflowErr(fieldName)
 			}
 		case Between:
 			cvs := strings.Split(cds[1], ",")
@@ -260,15 +238,9 @@ func checkInt16(fieldName string, tvs []string) error {
 			if err != nil {
 				return condFormatErr(fieldName)
 			}
-			if left > math.MaxInt16 || left < math.MinInt16 {
-				return overflowErr(fieldName)
-			}
 			right, err := strconv.Atoi(cvs[1])
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if right > math.MaxInt16 || right < math.MinInt16 {
-				return overflowErr(fieldName)
 			}
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
@@ -301,12 +273,9 @@ func checkUint16(fieldName string, tvs []string) error {
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
-			tv, err := strconv.Atoi(cds[1])
+			_, err := strconv.Atoi(cds[1])
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if tv > math.MaxUint16 || tv < Zero {
-				return overflowErr(fieldName)
 			}
 		case Between:
 			cvs := strings.Split(cds[1], ",")
@@ -317,15 +286,9 @@ func checkUint16(fieldName string, tvs []string) error {
 			if err != nil {
 				return condFormatErr(fieldName)
 			}
-			if left > math.MaxUint16 || left < Zero {
-				return overflowErr(fieldName)
-			}
 			right, err := strconv.Atoi(cvs[1])
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if right > math.MaxUint16 || right < Zero {
-				return overflowErr(fieldName)
 			}
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
@@ -358,12 +321,9 @@ func checkInt32(fieldName string, tvs []string) error {
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
-			tv, err := strconv.Atoi(cds[1])
+			_, err := strconv.Atoi(cds[1])
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if tv > math.MaxInt32 || tv < math.MinInt32 {
-				return overflowErr(fieldName)
 			}
 		case Between:
 			cvs := strings.Split(cds[1], ",")
@@ -374,15 +334,9 @@ func checkInt32(fieldName string, tvs []string) error {
 			if err != nil {
 				return condFormatErr(fieldName)
 			}
-			if left > math.MaxInt32 || left < math.MinInt32 {
-				return overflowErr(fieldName)
-			}
 			right, err := strconv.Atoi(cvs[1])
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if right > math.MaxInt32 || right < math.MinInt32 {
-				return overflowErr(fieldName)
 			}
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
@@ -415,12 +369,9 @@ func checkUint32(fieldName string, tvs []string) error {
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
-			tv, err := strconv.Atoi(cds[1])
+			_, err := strconv.Atoi(cds[1])
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if tv > math.MaxUint32 || tv < Zero {
-				return overflowErr(fieldName)
 			}
 		case Between:
 			cvs := strings.Split(cds[1], ",")
@@ -431,15 +382,9 @@ func checkUint32(fieldName string, tvs []string) error {
 			if err != nil {
 				return condFormatErr(fieldName)
 			}
-			if left > math.MaxUint32 || left < Zero {
-				return overflowErr(fieldName)
-			}
 			right, err := strconv.Atoi(cvs[1])
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if right > math.MaxUint32 || right < Zero {
-				return overflowErr(fieldName)
 			}
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
@@ -472,12 +417,9 @@ func checkInt(fieldName string, tvs []string) error {
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
-			tv, err := strconv.Atoi(cds[1])
+			_, err := strconv.Atoi(cds[1])
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if tv > math.MaxInt || tv < math.MinInt {
-				return overflowErr(fieldName)
 			}
 		case Between:
 			cvs := strings.Split(cds[1], ",")
@@ -488,15 +430,9 @@ func checkInt(fieldName string, tvs []string) error {
 			if err != nil {
 				return condFormatErr(fieldName)
 			}
-			if left > math.MaxInt || left < math.MinInt {
-				return overflowErr(fieldName)
-			}
 			right, err := strconv.Atoi(cvs[1])
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if right > math.MaxInt || right < math.MinInt {
-				return overflowErr(fieldName)
 			}
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
@@ -529,12 +465,9 @@ func checkUint(fieldName string, tvs []string) error {
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
-			tv, err := strconv.ParseUint(cds[1], 10, 64)
+			_, err := strconv.ParseUint(cds[1], 10, 64)
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if tv > math.MaxUint || tv < Zero {
-				return overflowErr(fieldName)
 			}
 		case Between:
 			cvs := strings.Split(cds[1], ",")
@@ -545,15 +478,9 @@ func checkUint(fieldName string, tvs []string) error {
 			if err != nil {
 				return condFormatErr(fieldName)
 			}
-			if left > math.MaxUint || left < Zero {
-				return overflowErr(fieldName)
-			}
 			right, err := strconv.ParseUint(cvs[1], 10, 64)
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if right > math.MaxUint || right < Zero {
-				return overflowErr(fieldName)
 			}
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
@@ -586,12 +513,9 @@ func checkInt64(fieldName string, tvs []string) error {
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
-			tv, err := strconv.ParseInt(cds[1], 10, 64)
+			_, err := strconv.ParseInt(cds[1], 10, 64)
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if tv > math.MaxInt64 || tv < math.MinInt64 {
-				return overflowErr(fieldName)
 			}
 		case Between:
 			cvs := strings.Split(cds[1], ",")
@@ -602,15 +526,9 @@ func checkInt64(fieldName string, tvs []string) error {
 			if err != nil {
 				return condFormatErr(fieldName)
 			}
-			if left > math.MaxInt64 || left < math.MinInt64 {
-				return overflowErr(fieldName)
-			}
 			right, err := strconv.ParseInt(cvs[1], 10, 64)
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if right > math.MaxInt64 || right < math.MinInt64 {
-				return overflowErr(fieldName)
 			}
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
@@ -643,12 +561,9 @@ func checkUint64(fieldName string, tvs []string) error {
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
-			tv, err := strconv.ParseUint(cds[1], 10, 64)
+			_, err := strconv.ParseUint(cds[1], 10, 64)
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if tv > math.MaxUint || tv < Zero {
-				return overflowErr(fieldName)
 			}
 		case Between:
 			cvs := strings.Split(cds[1], ",")
@@ -659,15 +574,9 @@ func checkUint64(fieldName string, tvs []string) error {
 			if err != nil {
 				return condFormatErr(fieldName)
 			}
-			if left > math.MaxUint || left < Zero {
-				return overflowErr(fieldName)
-			}
 			right, err := strconv.ParseUint(cvs[1], 10, 64)
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if right > math.MaxUint || right < Zero {
-				return overflowErr(fieldName)
 			}
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
@@ -700,12 +609,9 @@ func checkFloat32(fieldName string, tvs []string) error {
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
-			tv, err := strconv.ParseFloat(cds[1], 32)
+			_, err := strconv.ParseFloat(cds[1], 32)
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if tv > math.MaxFloat32 || tv < math.SmallestNonzeroFloat32 {
-				return overflowErr(fieldName)
 			}
 		case Between:
 			cvs := strings.Split(cds[1], ",")
@@ -716,15 +622,9 @@ func checkFloat32(fieldName string, tvs []string) error {
 			if err != nil {
 				return condFormatErr(fieldName)
 			}
-			if left > math.MaxFloat32 || left < math.SmallestNonzeroFloat32 {
-				return overflowErr(fieldName)
-			}
 			right, err := strconv.ParseFloat(cvs[1], 32)
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if right > math.MaxFloat32 || right < math.SmallestNonzeroFloat32 {
-				return overflowErr(fieldName)
 			}
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
@@ -757,12 +657,9 @@ func checkFloat64(fieldName string, tvs []string) error {
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
-			tv, err := strconv.ParseFloat(cds[1], 64)
+			_, err := strconv.ParseFloat(cds[1], 64)
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if tv > math.MaxFloat64 || tv < math.SmallestNonzeroFloat64 {
-				return overflowErr(fieldName)
 			}
 		case Between:
 			cvs := strings.Split(cds[1], ",")
@@ -773,15 +670,9 @@ func checkFloat64(fieldName string, tvs []string) error {
 			if err != nil {
 				return condFormatErr(fieldName)
 			}
-			if left > math.MaxFloat64 || left < math.SmallestNonzeroFloat64 {
-				return overflowErr(fieldName)
-			}
 			right, err := strconv.ParseFloat(cvs[1], 64)
 			if err != nil {
 				return condFormatErr(fieldName)
-			}
-			if right > math.MaxFloat64 || right < math.SmallestNonzeroFloat64 {
-				return overflowErr(fieldName)
 			}
 			if left >= right {
 				return condValLogicErr(fieldName, cds0)
@@ -1031,8 +922,4 @@ func condValLogicErr(fieldName string, kind string) error {
 
 func condNeedType(fieldName string) error {
 	return fmt.Errorf(`the conditional value of the %q field need tag "type"`, fieldName)
-}
-
-func overflowErr(fieldName string) error {
-	return fmt.Errorf("the conditional value of the %q field overflowed", fieldName)
 }

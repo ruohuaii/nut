@@ -158,99 +158,66 @@ func ThrowCondIn(shortName, fieldName string, cValue string, elemType string) st
 
 func ThrowCondType(shortName, fieldName string, elemType string) string {
 	var format string
-	varName := fmt.Sprintf("%s%sVal", strings.ToLower(fieldName[:1]), fieldName[1:])
+	varName := fmt.Sprintf("%s%sParseErr", strings.ToLower(fieldName[:1]), fieldName[1:])
 	switch elemType {
 	case Int8:
-		format = `%s,err := strconv.ParseInt(%s.%s,10,64)
-	if err != nil {
+		format = `_,%s := strconv.ParseInt(%s.%s,10,64)
+	if %s != nil {
 		return fmt.Errorf("the value of the %s field is wrong")
-	}
-	if %s >math.MaxInt8||%s<math.MinInt8{
-		return fmt.Errorf("the value of the %s field overflowed")
 	}`
 	case Int16:
-		format = `%s,err := strconv.ParseInt(%s.%s,10,64)
-	if err != nil {
+		format = `_,%s := strconv.ParseInt(%s.%s,10,64)
+	if %s != nil {
 		return fmt.Errorf("the value of the %s field is wrong")
-	}
-	if %s >math.MaxInt16||%s<math.MinInt16{
-		return fmt.Errorf("the value of the %s field overflowed")
 	}`
 	case Int32:
-		format = `%s,err := strconv.ParseInt(%s.%s,10,64)
-	if err != nil {
+		format = `_,%s := strconv.ParseInt(%s.%s,10,64)
+	if %s != nil {
 		return fmt.Errorf("the value of the %s field is wrong")
-	}
-	if %s >math.MaxInt32||%s<math.MinInt32{
-		return fmt.Errorf("the value of the %s field overflowed")
 	}`
 	case Int:
-		format = `%s,err := strconv.ParseInt(%s.%s,10,64)
-	if err != nil {
+		format = `_,%s := strconv.ParseInt(%s.%s,10,64)
+	if %s != nil {
 		return fmt.Errorf("the value of the %s field is wrong")
-	}
-	if %s >math.MaxInt||%s<math.MinInt{
-		return fmt.Errorf("the value of the %s field overflowed")
 	}`
 	case Int64:
-		format = `%s,err := strconv.ParseInt(%s.%s,10,64)
-	if err != nil {
+		format = `_,%s := strconv.ParseInt(%s.%s,10,64)
+	if %s != nil {
 		return fmt.Errorf("the value of the %s field is wrong")
-	}
-	if %s >math.MaxInt64||%s<math.MinInt64{
-		return fmt.Errorf("the value of the %s field overflowed")
 	}`
 	case Uint8:
-		format = `%s,err := strconv.ParseUint(%s.%s,10,64)
-	if err != nil {
+		format = `_,%s := strconv.ParseUint(%s.%s,10,64)
+	if %s != nil {
 		return fmt.Errorf("the value of the %s field is wrong")
-	}
-	if %s >math.MaxUint8||%s<0{
-		return fmt.Errorf("the value of the %s field overflowed")
 	}`
 	case Uint16:
-		format = `%s,err := strconv.ParseUint(%s.%s,10,64)
-	if err != nil {
+		format = `_,%s := strconv.ParseUint(%s.%s,10,64)
+	if %s != nil {
 		return fmt.Errorf("the value of the %s field is wrong")
-	}
-	if %s >math.MaxUint16||%s<0{
-		return fmt.Errorf("the value of the %s field overflowed")
 	}`
 	case Uint32:
-		format = `%s,err := strconv.ParseUint(%s.%s,10,64)
-	if err != nil {
+		format = `_,%s := strconv.ParseUint(%s.%s,10,64)
+	if %s != nil {
 		return fmt.Errorf("the value of the %s field is wrong")
-	}
-	if %s >math.MaxUint32||%s<0{
-		return fmt.Errorf("the value of the %s field overflowed")
 	}`
 	case Uint64:
-		format = `%s,err := strconv.ParseUint(%s.%s,10,64)
-	if err != nil {
+		format = `_,%s := strconv.ParseUint(%s.%s,10,64)
+	if %s != nil {
 		return fmt.Errorf("the value of the %s field is wrong")
-	}
-	if %s >math.MaxUint64||%s<0{
-		return fmt.Errorf("the value of the %s field overflowed")
 	}`
 	case Float32:
-		format = `%s,err := strconv.ParseFloat(%s.%s,32)
-	if err != nil {
+		format = `_,%s := strconv.ParseFloat(%s.%s,32)
+	if %s != nil {
 		return fmt.Errorf("the value of the %s field is wrong")
-	}
-	if %s >math.MaxFloat32||%s<math.SmallestNonzeroFloat32{
-		return fmt.Errorf("the value of the %s field overflowed")
 	}`
 	case Float64:
-		format = `%s,err := strconv.ParseFloat(%s.%s,64)
-	if err != nil {
+		format = `_,%s := strconv.ParseFloat(%s.%s,64)
+	if %s != nil {
 		return fmt.Errorf("the value of the %s field is wrong")
-	}
-	if %s >math.MaxFloat64||%s<math.SmallestNonzeroFloat64{
-		return fmt.Errorf("the value of the %s field overflowed")
 	}`
 	}
 
-	return fmt.Sprintf(format, varName, shortName, fieldName, fieldName, varName, varName, fieldName)
+	return fmt.Sprintf(format, varName, shortName, fieldName, varName, fieldName)
 }
 
 func ThrowCondStruct(shortName, fieldName, structName string, isOptional bool, isPtr bool) string {

@@ -2,7 +2,6 @@ package types
 
 import (
 	"fmt"
-	"math"
 	"reflect"
 	"strconv"
 
@@ -52,18 +51,15 @@ func (r *Robert) Check() error {
 	return nil
 }
 func (p *Person) Check() error {
-	var disgustingsubjectContains = []string{"Math", "Physics"}
-	for i := 0; i < len(disgustingsubjectContains); i++ {
-		if ArrayContains(p.DisgustingSubject, disgustingsubjectContains[i]) {
+	var disgustingSubjectContains = []string{"Math", "Physics"}
+	for i := 0; i < len(disgustingSubjectContains); i++ {
+		if ArrayContains(p.DisgustingSubject, disgustingSubjectContains[i]) {
 			return fmt.Errorf("the value of the DisgustingSubject field cannot contain Math,Physics")
 		}
 	}
-	favoriteNumberVal, err := strconv.ParseUint(p.FavoriteNumber, 10, 64)
-	if err != nil {
+	_, favoriteNumberParseErr := strconv.ParseUint(p.FavoriteNumber, 10, 64)
+	if favoriteNumberParseErr != nil {
 		return fmt.Errorf("the value of the FavoriteNumber field is wrong")
-	}
-	if favoriteNumberVal > math.MaxUint8 || favoriteNumberVal < 0 {
-		return fmt.Errorf("the value of the FavoriteNumber field overflowed")
 	}
 	var favoriteSubjectIn = []string{"Math", "English", "Physics"}
 	if !ArrayContains(favoriteSubjectIn, p.FavoriteSubject) {
