@@ -19,7 +19,8 @@ type Rules struct {
 }
 
 type Condition struct {
-	Rule string
+	Rule  string
+	FType string
 }
 
 type FieldStruct struct {

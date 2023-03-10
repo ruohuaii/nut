@@ -18,115 +18,108 @@ func parse(rt reflect.Type, isStructField bool, fieldName string, mainShortName 
 	opt.ShortName = strings.ToLower(rt.Name()[:1])
 
 	relationRules := make(map[string]Relation)
-	selfRules := make(map[string][]Condition)
+	selfRules := make(map[string]map[string]Condition)
 	var structFieldCond Condition
 	for i := 0; i < rt.NumField(); i++ {
 		fieldName := rt.Field(i).Name
 		tag := rt.Field(i).Tag.Get(Nut)
-		fcs := strings.Split(tag, ";")
-		for _, v := range fcs {
-			fcv := strings.Split(v, ":")
-			if len(fcv) != 2 {
+		definedRules := getDefinedRules(tag)
+		for k, v := range definedRules {
+			if _, ok := selfRules[fieldName]; !ok {
+				selfRules[fieldName] = make(map[string]Condition)
+			}
+			kind := rt.Field(i).Type.Kind()
+			if ArrayContains(SpecialCondSet[:], k) {
+				selfRules[fieldName][k] = Condition{
+					Rule:  k,
+					FType: kind.String(),
+				}
 				continue
 			}
-			//fcv[0] is the nut condition type
-			kind := rt.Field(i).Type.Kind()
 			switch kind {
 			case reflect.Int8, reflect.Int16, reflect.Int32,
 				reflect.Int, reflect.Int64, reflect.Uint8,
 				reflect.Uint16, reflect.Uint32, reflect.Uint,
 				reflect.Uint64, reflect.Float32, reflect.Float64,
 				reflect.String:
-				switch fcv[0] {
+				switch k {
 				case Associate:
 					relationRules[fieldName] = Relation{
 						Self:      fieldName,
-						Associate: fcv[1],
+						Associate: k,
 					}
 				case Eq:
 					isString := false
 					if kind == reflect.String {
 						isString = true
 					}
-					selfRules[fieldName] = append(selfRules[fieldName], Condition{
-						Rule: ThrowCondNeq(opt.ShortName, fieldName, fcv[1], isString),
-					})
+					selfRules[fieldName][Eq] = Condition{
+						Rule: ThrowCondNeq(opt.ShortName, fieldName, v, isString),
+					}
 				case Neq:
 					isString := false
 					if kind == reflect.String {
 						isString = true
 					}
-					selfRules[fieldName] = append(selfRules[fieldName], Condition{
-						Rule: ThrowCondEq(opt.ShortName, fieldName, fcv[1], isString),
-					})
-				case Lt:
-					selfRules[fieldName] = append(selfRules[fieldName], Condition{
-						Rule: ThrowCondGte(opt.ShortName, fieldName, fcv[1]),
-					})
-				case Lte:
-					selfRules[fieldName] = append(selfRules[fieldName], Condition{
-						Rule: ThrowCondGt(opt.ShortName, fieldName, fcv[1]),
-					})
-				case Gt:
-					selfRules[fieldName] = append(selfRules[fieldName], Condition{
-						Rule: ThrowCondLte(opt.ShortName, fieldName, fcv[1]),
-					})
-				case Gte:
-					selfRules[fieldName] = append(selfRules[fieldName], Condition{
-						Rule: ThrowCondLt(opt.ShortName, fieldName, fcv[1]),
-					})
-				case Between:
-					cvs := strings.Split(fcv[1], ",")
-					selfRules[fieldName] = append(selfRules[fieldName], Condition{
-						Rule: ThrowCondBetween(opt.ShortName, fieldName, cvs[0], cvs[1]),
-					})
-				case Size:
-					cvs := strings.Split(fcv[1], ",")
-					selfRules[fieldName] = append(selfRules[fieldName], Condition{
-						Rule: ThrowCondSize(opt.ShortName, fieldName, cvs, kind.String()),
-					})
-				case Regexp:
-					selfRules[fieldName] = append(selfRules[fieldName], Condition{
-						Rule: ThrowCondRegexp(opt.ShortName, fieldName, fcv[1]),
-					})
-				case In:
-					selfRules[fieldName] = append(selfRules[fieldName], Condition{
-						Rule: ThrowCondIn(opt.ShortName, fieldName, fcv[1], kind.String()),
-					})
-				case Type:
-					var elemType string
-					for _, v := range fcs {
-						rule := strings.Split(v, ":")
-						if rule[0] == Type {
-							elemType = rule[1]
-						}
+					selfRules[fieldName][Neq] = Condition{
+						Rule: ThrowCondEq(opt.ShortName, fieldName, v, isString),
 					}
-					selfRules[fieldName] = append(selfRules[fieldName], Condition{
+				case Lt:
+					selfRules[fieldName][Lt] = Condition{
+						Rule: ThrowCondGte(opt.ShortName, fieldName, v),
+					}
+				case Lte:
+					selfRules[fieldName][Lte] = Condition{
+						Rule: ThrowCondGt(opt.ShortName, fieldName, v),
+					}
+				case Gt:
+					selfRules[fieldName][Gt] = Condition{
+						Rule: ThrowCondLte(opt.ShortName, fieldName, v),
+					}
+				case Gte:
+					selfRules[fieldName][Gte] = Condition{
+						Rule: ThrowCondLt(opt.ShortName, fieldName, v),
+					}
+				case Between:
+					cvs := strings.Split(v, ",")
+					selfRules[fieldName][Between] = Condition{
+						Rule: ThrowCondBetween(opt.ShortName, fieldName, cvs[0], cvs[1]),
+					}
+				case Size:
+					cvs := strings.Split(v, ",")
+					selfRules[fieldName][Size] = Condition{
+						Rule: ThrowCondSize(opt.ShortName, fieldName, cvs, kind.String()),
+					}
+				case Regexp:
+					selfRules[fieldName][Regexp] = Condition{
+						Rule: ThrowCondRegexp(opt.ShortName, fieldName, v),
+					}
+				case In:
+					selfRules[fieldName][In] = Condition{
+						Rule: ThrowCondIn(opt.ShortName, fieldName, v, kind.String()),
+					}
+				case Type:
+					elemType := definedRules[Type]
+					selfRules[fieldName][Type] = Condition{
 						Rule: ThrowCondType(opt.ShortName, fieldName, elemType),
-					})
+					}
 				}
 			case reflect.Slice, reflect.Array:
-				var elemType string
-				for _, v := range fcs {
-					rule := strings.Split(v, ":")
-					if rule[0] == Type {
-						elemType = rule[1]
-					}
-				}
-				switch fcv[0] {
+				elemType := definedRules[Type]
+				switch k {
 				case Contains:
-					selfRules[fieldName] = append(selfRules[fieldName], Condition{
-						Rule: ThrowCondExcluded(opt.ShortName, fieldName, fcv[1], elemType),
-					})
+					selfRules[fieldName][Contains] = Condition{
+						Rule: ThrowCondExcluded(opt.ShortName, fieldName, v, elemType),
+					}
 				case Excluded:
-					selfRules[fieldName] = append(selfRules[fieldName], Condition{
-						Rule: ThrowCondContains(opt.ShortName, fieldName, fcv[1], elemType),
-					})
+					selfRules[fieldName][Excluded] = Condition{
+						Rule: ThrowCondContains(opt.ShortName, fieldName, v, elemType),
+					}
 				case Size:
-					cvs := strings.Split(fcv[1], ",")
-					selfRules[fieldName] = append(selfRules[fieldName], Condition{
+					cvs := strings.Split(v, ",")
+					selfRules[fieldName][Size] = Condition{
 						Rule: ThrowCondSize(opt.ShortName, fieldName, cvs, kind.String()),
-					})
+					}
 				}
 			}
 		}
@@ -138,21 +131,49 @@ func parse(rt reflect.Type, isStructField bool, fieldName string, mainShortName 
 		}
 	}
 
-	associateRules := make(map[string][]Condition)
-	for k := range selfRules {
-		if m, ok := relationRules[k]; ok {
-			associateRules[m.Associate] = append(associateRules[m.Associate], selfRules[k]...)
-			delete(selfRules, k)
-		}
-	}
-
+	//Association conditions will be implemented in the future
+	_ = relationRules
 	conditions := make(map[string]Rules)
 
-	for k, v := range selfRules {
-		conditions[k] = Rules{
-			SelfRules:      v,
-			AssociateRules: associateRules[k],
+	for f, v := range selfRules {
+		rules := Rules{}
+		rules.SelfRules = make([]Condition, 0)
+		for c, m := range v {
+			if c == Optional {
+				switch m.FType {
+				case String:
+					format1 := `if %s.%s != ""{`
+					topRule := fmt.Sprintf(format1, opt.ShortName, f)
+					for _, r := range v {
+						if r.Rule == Optional || r.Rule == Required {
+							continue
+						}
+						topRule += r.Rule + "\n"
+					}
+					rule := topRule + "}"
+					rules.SelfRules = append(rules.SelfRules, Condition{
+						Rule: rule,
+					})
+
+				case Int8, Int16, Int32, Int, Int64, Uint8, Uint16, Uint32, Uint, Uint64, Float32, Float64:
+					format1 := `if %s.%s != 0{`
+					topRule := fmt.Sprintf(format1, opt.ShortName, f)
+					for _, r := range v {
+						topRule += r.Rule + "\n"
+					}
+					rule := topRule + "}"
+					rules.SelfRules = append(rules.SelfRules, Condition{
+						Rule: rule,
+					})
+				}
+			} else {
+				if c == Required {
+					continue
+				}
+				rules.SelfRules = append(rules.SelfRules, m)
+			}
 		}
+		conditions[f] = rules
 	}
 
 	opt.Conditions = conditions
@@ -186,4 +207,21 @@ func pickStruct(mainType reflect.Type) []FieldStruct {
 	}
 
 	return types
+}
+
+func getDefinedRules(tag string) map[string]string {
+	rules := strings.Split(tag, Semicolon)
+	definedRules := make(map[string]string)
+	for _, v := range rules {
+		conditions := strings.Split(v, ":")
+		if len(conditions) == 0 {
+			continue
+		} else if len(conditions) == 1 {
+			definedRules[conditions[0]] = StringNull
+		} else {
+			definedRules[conditions[0]] = conditions[1]
+		}
+	}
+
+	return definedRules
 }

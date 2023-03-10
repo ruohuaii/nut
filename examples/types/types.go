@@ -10,23 +10,23 @@ import (
 
 type (
 	Person struct {
-		Hobby             []string `nut:"size:3;contains:sing,rap,basketball;type:string"`
-		Nature            string   `nut:"size:3,30"`
-		FavoriteNumber    string   `nut:"type:uint8"`
-		FavoriteSubject   string   `nut:"in:Math,English,Physics"`
-		DisgustingSubject []string `nut:"excluded:Math,Physics;type:string"`
+		Hobby             []string `nut:"optional;size:3;contains:sing,rap,basketball;type:string"`
+		Nature            string   `nut:"optional;size:3,30"`
+		FavoriteNumber    string   `nut:"optional;type:uint8"`
+		FavoriteSubject   string   `nut:"optional;in:Math,English,Physics"`
+		DisgustingSubject []string `nut:"optional;excluded:Math,Physics;type:string"`
 		Jenny             *Jenny   `nut:"optional"`
 		Robert            Robert   `nut:"required"`
 	}
 
 	Jenny struct {
-		Name string `nut:"size:5"`
-		Age  uint8  `nut:"gt:10"`
+		Name string `nut:"required;size:5"`
+		Age  uint8  `nut:"required;gt:10"`
 	}
 
 	Robert struct {
-		Name string `nut:"size:6"`
-		Age  uint8  `nut:"gte:10"`
+		Name string `nut:"required;size:6"`
+		Age  uint8  `nut:"required;gte:10"`
 	}
 )
 
@@ -57,6 +57,12 @@ func (p *Person) Check() error {
 			return fmt.Errorf("the value of the DisgustingSubject field cannot contain Math,Physics")
 		}
 	}
+	if p.FavoriteNumber != "" {
+		_, favoriteNumberParseErr := strconv.ParseUint(p.FavoriteNumber, 10, 64)
+		if favoriteNumberParseErr != nil {
+			return fmt.Errorf("the value of the FavoriteNumber field is wrong")
+		}
+	}
 	_, favoriteNumberParseErr := strconv.ParseUint(p.FavoriteNumber, 10, 64)
 	if favoriteNumberParseErr != nil {
 		return fmt.Errorf("the value of the FavoriteNumber field is wrong")
@@ -65,13 +71,24 @@ func (p *Person) Check() error {
 	if !ArrayContains(favoriteSubjectIn, p.FavoriteSubject) {
 		return fmt.Errorf("the value of the FavoriteSubject field should be one of Math,English,Physics")
 	}
-	if len(p.Hobby) != 3 {
-		return fmt.Errorf("the length of the Hobby field must be 3")
+	if p.FavoriteSubject != "" {
+		var favoriteSubjectIn = []string{"Math", "English", "Physics"}
+		if !ArrayContains(favoriteSubjectIn, p.FavoriteSubject) {
+			return fmt.Errorf("the value of the FavoriteSubject field should be one of Math,English,Physics")
+		}
 	}
 	var hobbyExcluded = []string{"sing", "rap", "basketball"}
 	for i := 0; i < len(hobbyExcluded); i++ {
 		if !ArrayContains(p.Hobby, hobbyExcluded[i]) {
 			return fmt.Errorf("the value of the Hobby field must contain sing,rap,basketball")
+		}
+	}
+	if len(p.Hobby) != 3 {
+		return fmt.Errorf("the length of the Hobby field must be 3")
+	}
+	if p.Nature != "" {
+		if len(p.Nature) < 3 || len(p.Nature) > 30 {
+			return fmt.Errorf("the length of Nature field value should be between 3 and 30")
 		}
 	}
 	if len(p.Nature) < 3 || len(p.Nature) > 30 {

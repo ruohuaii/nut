@@ -119,6 +119,9 @@ func checkInt8(fieldName string, tvs []string) error {
 		if v == "" {
 			continue
 		}
+		if v == Optional || v == Required {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
@@ -165,15 +168,16 @@ func checkUint8(fieldName string, tvs []string) error {
 		if v == "" {
 			continue
 		}
+		if v == Optional || v == Required {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
-
 		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
-
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
@@ -213,15 +217,16 @@ func checkInt16(fieldName string, tvs []string) error {
 		if v == "" {
 			continue
 		}
+		if v == Optional || v == Required {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
-
 		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
-
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
@@ -261,15 +266,16 @@ func checkUint16(fieldName string, tvs []string) error {
 		if v == "" {
 			continue
 		}
+		if v == Optional || v == Required {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
-
 		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
-
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
@@ -309,15 +315,16 @@ func checkInt32(fieldName string, tvs []string) error {
 		if v == "" {
 			continue
 		}
+		if v == Optional || v == Required {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
-
 		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
-
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
@@ -357,15 +364,16 @@ func checkUint32(fieldName string, tvs []string) error {
 		if v == "" {
 			continue
 		}
+		if v == Optional || v == Required {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
-
 		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
-
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
@@ -405,15 +413,16 @@ func checkInt(fieldName string, tvs []string) error {
 		if v == "" {
 			continue
 		}
+		if v == Optional || v == Required {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
-
 		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
-
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
@@ -453,15 +462,16 @@ func checkUint(fieldName string, tvs []string) error {
 		if v == "" {
 			continue
 		}
+		if v == Optional || v == Required {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
-
 		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
-
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
@@ -501,15 +511,16 @@ func checkInt64(fieldName string, tvs []string) error {
 		if v == "" {
 			continue
 		}
+		if v == Optional || v == Required {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
-
 		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
-
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
@@ -549,15 +560,16 @@ func checkUint64(fieldName string, tvs []string) error {
 		if v == "" {
 			continue
 		}
+		if v == Optional || v == Required {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
 		}
-
 		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
-
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
@@ -597,6 +609,9 @@ func checkFloat32(fieldName string, tvs []string) error {
 		if v == "" {
 			continue
 		}
+		if v == Optional || v == Required {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
@@ -605,7 +620,6 @@ func checkFloat32(fieldName string, tvs []string) error {
 		if !ArrayContains(NumeralCondSet[:], cds[0]) {
 			return condKeyErr(fieldName)
 		}
-
 		cds0 := cds[0]
 		switch cds0 {
 		case Eq, Neq, Gt, Gte, Lt, Lte:
@@ -643,6 +657,9 @@ func checkFloat32(fieldName string, tvs []string) error {
 func checkFloat64(fieldName string, tvs []string) error {
 	for _, v := range tvs {
 		if v == "" {
+			continue
+		}
+		if v == Optional || v == Required {
 			continue
 		}
 		cds := strings.Split(v, ":")
@@ -693,6 +710,9 @@ func checkString(fieldName string, tvs []string) error {
 		if v == "" {
 			continue
 		}
+		if v == Optional || v == Required {
+			continue
+		}
 		cds := strings.Split(v, ":")
 		if len(cds) != 2 {
 			return condValNumErr(fieldName, len(cds), v)
@@ -723,6 +743,9 @@ func checkString(fieldName string, tvs []string) error {
 func checkSlice(fieldName string, tvs []string) error {
 	for _, v := range tvs {
 		if v == "" {
+			continue
+		}
+		if v == Optional || v == Required {
 			continue
 		}
 		cds := strings.Split(v, ":")
@@ -814,21 +837,22 @@ func checkRule(v reflect.Value) error {
 	ft := v.Type()
 	for i := 0; i < v.NumField(); i++ {
 		tfd := ft.Field(i)
-		if tfd.Tag.Get(Nut) == StringNull {
-			continue
+		definedRules := getDefinedRules(tfd.Tag.Get(Nut))
+		_, ok1 := definedRules[Optional]
+		_, ok2 := definedRules[Required]
+		if ok1 && ok2 {
+			return fmt.Errorf("optional and required can only have one")
 		}
 		vfd := v.Field(i)
 		switch vfd.Kind() {
 		case reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int, reflect.Int64,
 			reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint, reflect.Uint64,
 			reflect.Float32, reflect.Float64:
-			rules := strings.Split(tfd.Tag.Get(Nut), ";")
-			for _, v := range rules {
-				rule := strings.Split(v, ":")
-				if !ArrayContains(NumeralCondSet[:], rule[0]) {
+			for k := range definedRules {
+				if !ArrayContains(NumeralCondSet[:], k) {
 					return condKeyErr(tfd.Name)
 				}
-				if ArrayContains([]string{In, Type, Size}, rule[0]) {
+				if ArrayContains([]string{In, Type, Size, Optional, Required}, k) {
 					continue
 				}
 				cc1[tfd.Name] += 1
@@ -837,13 +861,11 @@ func checkRule(v reflect.Value) error {
 				}
 			}
 		case reflect.String:
-			rules := strings.Split(tfd.Tag.Get(Nut), ";")
-			for _, v := range rules {
-				rule := strings.Split(v, ":")
-				if !ArrayContains(StringCondSet[:], rule[0]) {
+			for k := range definedRules {
+				if !ArrayContains(StringCondSet[:], k) {
 					return condKeyErr(tfd.Name)
 				}
-				if ArrayContains([]string{In, Type, Regexp, Size}, rule[0]) {
+				if ArrayContains([]string{In, Type, Regexp, Size, Optional, Required}, k) {
 					continue
 				}
 				cc1[tfd.Name] += 1
@@ -852,18 +874,25 @@ func checkRule(v reflect.Value) error {
 				}
 			}
 		case reflect.Slice, reflect.Array:
-			rules := strings.Split(tfd.Tag.Get(Nut), ";")
-			for _, v := range rules {
-				rule := strings.Split(v, ":")
-				if !ArrayContains(ArrayCondSet[:], rule[0]) {
+			for k := range definedRules {
+				if !ArrayContains(ArrayCondSet[:], k) {
 					return condKeyErr(tfd.Name)
 				}
-				if ArrayContains([]string{Type, Size}, rule[0]) {
+				if ArrayContains([]string{Type, Size, Optional, Required}, k) {
 					continue
 				}
 				cc2[tfd.Name] += 1
 				if cc2[tfd.Name] > 1 {
 					return condRuleErr(tfd.Name)
+				}
+				if k == Contains || k == Excluded {
+					v, ok := definedRules[Type]
+					if !ok {
+						return fmt.Errorf(`%s condition needs to specify "type"`, k)
+					}
+					if !ArrayContains(Types[:], v) {
+						return fmt.Errorf(`the "type" specified in the %s field is wrong`, tfd.Name)
+					}
 				}
 			}
 		}
