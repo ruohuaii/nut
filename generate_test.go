@@ -20,7 +20,7 @@ func Test_Generate_Check(t *testing.T) {
 		Name: "Self-Denial",
 	}
 
-	t.Log("校验结果:", self.Check())
+	t.Log("check result:", self.Check())
 }
 
 //Executing the "Test_Generate" method will generate this "Check" verification method

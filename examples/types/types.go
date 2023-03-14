@@ -38,13 +38,13 @@ func (p *Person) Summary() map[string]map[string]string {
 
 func (j *Jenny) Summary() map[string]map[string]string {
 	return map[string]map[string]string{
-		"Hobby": {"size": "你在干什么啊"},
+		"Hobby": {"size": "it is hobby"},
 	}
 }
 
 func (r *Robert) Summary() map[string]map[string]string {
 	return map[string]map[string]string{
-		"Hobby": {"size": "你在干什么啊"},
+		"Hobby": {"size": "it is size"},
 	}
 }
 func (j *Jenny) Check() error {
