@@ -1,2 +1,3 @@
 # nut
-Nut is a library written by golang for autonomously generating school experiment methods. For usage, please refer to example
+
+Nut is a library written in golang for automatic generation of structure validation methods. Please refer to the example for usage
