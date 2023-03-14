@@ -26,6 +26,8 @@ type Condition struct {
 type FieldStruct struct {
 	FieldName  string
 	Type       reflect.Type
+	Value      reflect.Value
 	IsOptional bool
 	IsPtr      bool
+	HasSummary bool
 }

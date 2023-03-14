@@ -3,9 +3,6 @@ package nut
 //Nut is the structure tag name
 const Nut = "nut"
 
-//Zero is the underlying value of the numeric type
-const Zero = 0
-
 //Semicolon is the tag separator
 const Semicolon = ";"
 
@@ -34,15 +31,17 @@ const (
 
 	//Associate  Field Conditions
 	Associate = "associate"
+
+	Summary = "summary"
 )
 
 //Some set of conditions
 var (
-	NumeralCondSet = [13]string{Eq, Neq, Lt, Lte, Gt, Gte, Between, In, Type, Size, Associate, Optional, Required}
-	StringCondSet  = [9]string{Eq, Neq, In, Type, Regexp, Size, Associate, Optional, Required}
-	ArrayCondSet   = [7]string{Contains, Excluded, Type, Size, Associate, Optional, Required}
-	BoolCondSet    = [2]string{Eq, Associate}
-	StructCondSet  = [2]string{Required, Optional}
+	NumeralCondSet = [14]string{Eq, Neq, Lt, Lte, Gt, Gte, Between, In, Type, Size, Associate, Optional, Required, Summary}
+	StringCondSet  = [10]string{Eq, Neq, In, Type, Regexp, Size, Associate, Optional, Required, Summary}
+	ArrayCondSet   = [8]string{Contains, Excluded, Type, Size, Associate, Optional, Required, Summary}
+	BoolCondSet    = [3]string{Eq, Associate, Summary}
+	StructCondSet  = [3]string{Required, Optional, Summary}
 	Types          = [13]string{Int8, Int16, Int32, Int, Int64, Uint8, Uint16, Uint32, Uint, Uint64, Float32, Float64, String}
 
 	SpecialCondSet = [2]string{Optional, Required}

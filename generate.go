@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func Generate(data any, file string) error {
+func Generate(data any, file string, hasSummary bool) error {
 	mainValue := reflect.ValueOf(data)
 	if mainValue.Kind() == reflect.Pointer && !mainValue.IsNil() {
 		mainValue = mainValue.Elem()
@@ -20,9 +20,11 @@ func Generate(data any, file string) error {
 	if mainType.Kind() == reflect.Pointer {
 		mainType = mainType.Elem()
 	}
-	types := pickStruct(mainType)
+	types := pickStruct(mainType, mainValue)
 	types = append(types, FieldStruct{
-		Type: mainType,
+		Type:       mainType,
+		Value:      reflect.ValueOf(data),
+		HasSummary: hasSummary,
 	})
 
 	mainShortName := strings.ToLower(mainType.Name()[:1])
@@ -34,8 +36,8 @@ func Generate(data any, file string) error {
 			isStructField = true
 		}
 		opt, structFieldCond, err := parse(
-			types[i].Type, isStructField, types[i].FieldName, mainShortName,
-			types[i].IsOptional, types[i].IsPtr,
+			types[i].Type, types[i].Value, isStructField, types[i].FieldName, mainShortName,
+			types[i].IsOptional, types[i].IsPtr, types[i].HasSummary,
 		)
 		if err != nil {
 			return err

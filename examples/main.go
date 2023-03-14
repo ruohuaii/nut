@@ -8,5 +8,5 @@ import (
 )
 
 func main() {
-	log.Println(nut.Generate(types.Person{}, "types/types.go"))
+	log.Println(nut.Generate(&types.Person{}, "types/types.go", true))
 }

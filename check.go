@@ -852,7 +852,7 @@ func checkRule(v reflect.Value) error {
 				if !ArrayContains(NumeralCondSet[:], k) {
 					return condKeyErr(tfd.Name)
 				}
-				if ArrayContains([]string{In, Type, Size, Optional, Required}, k) {
+				if ArrayContains([]string{In, Type, Size, Optional, Required, Summary}, k) {
 					continue
 				}
 				cc1[tfd.Name] += 1
@@ -865,7 +865,7 @@ func checkRule(v reflect.Value) error {
 				if !ArrayContains(StringCondSet[:], k) {
 					return condKeyErr(tfd.Name)
 				}
-				if ArrayContains([]string{In, Type, Regexp, Size, Optional, Required}, k) {
+				if ArrayContains([]string{In, Type, Regexp, Size, Optional, Required, Summary}, k) {
 					continue
 				}
 				cc1[tfd.Name] += 1
@@ -878,7 +878,7 @@ func checkRule(v reflect.Value) error {
 				if !ArrayContains(ArrayCondSet[:], k) {
 					return condKeyErr(tfd.Name)
 				}
-				if ArrayContains([]string{Type, Size, Optional, Required}, k) {
+				if ArrayContains([]string{Type, Size, Optional, Required, Summary}, k) {
 					continue
 				}
 				cc2[tfd.Name] += 1
