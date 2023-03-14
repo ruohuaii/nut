@@ -1,24 +1,33 @@
 package nut
 
 import (
+	"errors"
 	"testing"
 )
 
+type MySelf struct {
+	Name string `nut:"size:3"`
+}
+
 func Test_Generate(t *testing.T) {
-	err := Generate(Woman{
-		Age: 12,
-	}, "woman_example.go")
+	err := Generate(&MySelf{}, "generate_test.go", false)
 
 	t.Log("generate_err:", err)
 }
 
 func Test_Generate_Check(t *testing.T) {
-	woman := &Woman{
-		Age:    18,
-		Weight: 110,
-		Height: 170,
-		Belt:   1,
+	self := &MySelf{
+		Name: "Self-Denial",
 	}
 
-	t.Log("校验结果:", woman.Check())
+	t.Log("校验结果:", self.Check())
+}
+
+//Executing the "Test_Generate" method will generate this "Check" verification method
+func (m *MySelf) Check() error {
+	if len(m.Name) != 3 {
+		return errors.New("the length of the Name field must be 3")
+	}
+
+	return nil
 }
